@@ -1,0 +1,22 @@
+version: "3"
+services:
+  nextcloud:
+    container_name: nextcloud
+    build: .
+    restart: unless-stopped
+    #image: linuxserver/nextcloud
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - ${NEXTCLOUD_CONF}:/config
+      - ${NEXTCLOUD_DATA}:/data
+      - ${NEXTCLOUD_EXT}:/hdd
+    expose:
+      - 443
+
+networks:
+  default:
+    external:
+      name: openresty_default

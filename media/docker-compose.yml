@@ -1,0 +1,138 @@
+version: '3'
+services:
+  vpn:
+    container_name: vpn
+    image: dperson/openvpn-client:latest
+    cap_add:
+      - net_admin # required to modify network interfaces
+    restart: unless-stopped
+    volumes:
+      - /dev/net:/dev/net:z # tun device
+      - ${ROOT}/config/vpn:/vpn # OpenVPN configuration
+    security_opt:
+      - label:disable
+    expose:
+      - 8112 # Deluge Web UI on VPN network
+      - 58846
+    command: '-r 192.168.1.0/24' # route local network traffic
+
+  deluge:
+    container_name: deluge
+    image: linuxserver/deluge:latest
+    restart: unless-stopped
+    network_mode: service:vpn # run on the vpn network
+    environment:
+      - PUID=${PUID} # default user id, defined in .env 
+      - PGID=${PGID} # default group id, defined in .env
+      - TZ=${TZ} # timezone, defined in .env
+    volumes:
+      - ${ROOT}/downloads:/downloads # downloads folder
+      - ${ROOT}/config/deluge:/config # config files
+
+  jackett:
+    container_name: jackett
+    image: linuxserver/jackett:development
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID} # default user id, defined in .env
+      - PGID=${PGID} # default group id, defined in .env
+      - TZ=${TZ} # timezone, defined in .env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${ROOT}/downloads/torrent:/downloads # place where to put .torrent files for manual download
+      - ${ROOT}/config/jackett:/config # config files
+    expose:
+      - 9117
+
+  sonarr:
+    container_name: sonarr
+    image: linuxserver/sonarr:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID} # default user id, defined in .env
+      - PGID=${PGID} # default group id, defined in .env
+      - TZ=${TZ} # timezone, defined in .env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${ROOT}/config/sonarr:/config # config files
+      - ${ROOT}/tv:/tv # tv shows folder
+      - ${ROOT}/downloads:/downloads # download folder
+    expose:
+      - 8989
+
+  radarr:
+    container_name: radarr
+    image: linuxserver/radarr:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID} # default user id, defined in .env
+      - PGID=${PGID} # default group id, defined in .env
+      - TZ=${TZ} # timezone, defined in .env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${ROOT}/config/radarr:/config # config files
+      - ${ROOT}/movies:/movies # movies folder
+      - ${ROOT}/downloads:/downloads # download folder
+    expose:
+      - 7878
+
+  bazarr:
+    container_name: bazarr
+    image: linuxserver/bazarr:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID} # default user id, defined in .env
+      - PGID=${PGID} # default group id, defined in .env
+      - TZ=${TZ} # timezone, defined in .env
+    volumes:
+      - ${ROOT}/config/bazarr:/config # config files
+      - ${ROOT}/movies:/movies # movies folder
+      - ${ROOT}/tv:/tv # tv shows folder
+    expose:
+      - 6767
+
+  ombi:
+    container_name: ombi
+    image: linuxserver/ombi:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID} # default user id, defined in .env
+      - PGID=${PGID} # default group id, defined in .env
+      - TZ=${TZ} # timezone, defined in .env
+    volumes:
+      - ${ROOT}/config/ombi:/config # config files
+    expose:
+      - 3579
+
+  organizr:
+    container_name: organizr
+    image: linuxserver/organizr:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID} # default user id, defined in .env
+      - PGID=${PGID} # default group id, defined in .env
+      - TZ=${TZ} # timezone, defined in .env
+    volumes:
+      - ${ROOT}/config/organizr:/config # config files
+    expose:
+      - 80
+
+#  tautulli:
+#    container_name: tautulli
+#    image: linuxserver/tautulli:latest
+#    restart: unless-stopped
+#    environment:
+#      - PUID=${PUID} # default user id, defined in .env
+#      - PGID=${PGID} # default group id, defined in .env
+#      - TZ=${TZ} # timezone, defined in .env
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - ${ROOT}/config/tautulli:/config # config files
+#      - ${ROOT}/config/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs
+#    expose:
+#      - 8181
+
+networks:
+  default:
+    external:
+      name: openresty_default

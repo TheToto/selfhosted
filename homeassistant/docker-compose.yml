@@ -1,0 +1,17 @@
+version: '3'
+services:
+  homeassistant:
+    container_name: homeassistant
+    restart: always
+    image: homeassistant/home-assistant:stable
+    volumes:
+      - ${HOMEASSISTANT_DIR}:/config
+    environment:
+      - TZ=Europe/Paris
+    expose:
+      - 8123
+
+networks:
+  default:
+    external:
+      name: openresty_default

@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  bitwarden:
+    image: bitwardenrs/server:latest
+    restart: unless-stopped
+    volumes:
+      - ${BITWARDEN_DIR}:/data
+    environment:
+      WEBSOCKET_ENABLED: 'true' # Required to use websockets
+      SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
+    expose:
+      - 80
+      - 3012
+
+networks:
+  default:
+    external:
+      name: openresty_default

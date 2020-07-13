@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  gitea:
+    container_name: gitea
+    image: gitea/gitea:latest
+    restart: unless-stopped
+    environment:
+      - USER_UID=1001
+      - USER_GID1001
+    volumes:
+      - ${GITEA_DIR}:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - 3000
+    ports:
+      - "127.0.0.1:2222:22"
+        # It need more configuration.
+        # See https://docs.gitea.io/en-us/install-with-docker/#ssh-container-passthrough
+
+networks:
+  default:
+    external:
+      name: openresty_default
