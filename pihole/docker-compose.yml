@@ -1,0 +1,62 @@
+version: "2"
+
+networks:
+  dhcp-relay:
+    # Enable docker ipv6 support before
+    # https://docs.docker.com/config/daemon/ipv6/
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 172.31.0.0/16 # IPv4 subnet
+        - subnet: 2001:3200:3200::/64 # IPv6 subnet
+  net:
+    external:
+      name: global_net
+
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    hostname: pihole # /etc/hostname
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    expose:
+      - 80
+    networks:
+      dhcp-relay:
+        ipv4_address: '172.31.0.100' # Arbitrary IP in subnet
+        ipv6_address: '2001:3200:3200::30' # Arbitrary IPv6 in subnet
+      net:
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.pihole.entrypoints=https'
+      - 'traefik.http.routers.pihole.middlewares=authelia@docker'
+      - 'traefik.http.services.pihole.loadbalancer.server.port=80'
+    environment:
+      TZ: 'Europe/Paris'
+      WEBPASSWORD: '' # Disable password (we are behind Authelia)
+      VIRTUAL_HOST: 'pihole.thetoto.fr'
+      DNS1: 1.1.1.1 # Cloudflare DNS
+      DNS2: 1.0.0.1
+      ServerIP: '192.168.1.52' # Local host IP
+      ServerIPv6: 'fe80::31cc:106e:a33f:a438' # Local host IPv6
+      DNSMASQ_LISTENING: all
+    volumes:
+      - './etc-pihole/:/etc/pihole/'
+      - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+      - './var-log/pihole.log:/var/log/pihole.log'
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+
+  # dhcp helper will be on host network, so it can handle DHCP requests and forward them to pihole
+  dhcphelper:
+    build: ./dhcp-helper
+    restart: unless-stopped
+    network_mode: host
+    command: -s 172.31.0.100 # Arbitrary IP in subnet
+      # maybe replace to hostname "servertoto" (it's both host and pihole container hostname)
+      # TODO: Add IPv6 DHCP ?
+    cap_add:
+      - NET_ADMIN

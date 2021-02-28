@@ -1,17 +1,20 @@
 version: '3'
 services:
-  homeassistant:
+  assistant:
     container_name: homeassistant
-    restart: always
+    restart: unless-stopped
     image: homeassistant/home-assistant:stable
     volumes:
-      - ${HOMEASSISTANT_DIR}:/config
+      - ./config:/config
     environment:
       - TZ=Europe/Paris
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.assistant.entrypoints=https'
     expose:
       - 8123
 
 networks:
   default:
     external:
-      name: openresty_default
+      name: global_net

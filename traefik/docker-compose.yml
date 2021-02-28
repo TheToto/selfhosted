@@ -1,0 +1,101 @@
+version: '3.3'
+
+networks:
+  net:
+    driver: bridge
+    name: global_net
+
+services:
+  traefik:
+    image: traefik:v2.2
+    container_name: traefik
+    restart: unless-stopped
+    depends_on:
+      - auth
+    volumes:
+      - ./traefik/acme.json:/acme.json
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - net
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.api.entrypoints=https'
+      - 'traefik.http.routers.api.service=api@internal'
+      - 'traefik.http.routers.api.middlewares=authelia@docker'
+    environment:
+      - CF_API_EMAIL=${CF_API_EMAIL}
+      - CF_API_KEY=${CF_API_KEY}
+    ports:
+      - 80:80
+      - 443:443
+    command:
+      - '--api'
+
+      - '--providers.docker=true'
+      - '--providers.docker.exposedByDefault=false'
+      - '--providers.docker.defaultRule=Host(`{{ index .Labels "com.docker.compose.service"}}.thetoto.fr`) || Host(`{{ index .Labels "com.docker.compose.service"}}.local`)'
+
+        # Accept connections on :80 but redirect to :443
+      - '--entrypoints.http=true'
+      - '--entrypoints.http.address=:80'
+      - '--entrypoints.http.http.redirections.entrypoint.to=https'
+      - '--entrypoints.http.http.redirections.entrypoint.scheme=https'
+
+        # Accept connections on :443
+      - '--entrypoints.https=true'
+      - '--entrypoints.https.address=:443'
+      - '--entrypoints.https.http.tls=true'
+      - '--entrypoints.https.http.tls.certResolver=letsencrypt'
+
+      - '--certificatesResolvers.letsencrypt.acme.storage=acme.json'
+      - '--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare'
+        # Staging
+      - '--certificatesResolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
+
+      - '--log=true'
+      - '--log.level=DEBUG'
+      #- '--log.filepath=/var/log/traefik.log'
+
+  auth:
+    image: authelia/authelia:latest
+    container_name: authelia
+    restart: unless-stopped
+    volumes:
+      - ./authelia:/config
+    networks:
+      - net
+    user: 1000:1000
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.authelia.entrypoints=https'
+
+      - 'traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/verify?rd=https://auth.thetoto.fr'
+      - 'traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true'
+      - 'traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User, Remote-Groups, Remote-Name, Remote-Email'
+      - 'traefik.http.middlewares.authelia-basic.forwardauth.address=http://authelia:9091/api/verify?auth=basic'
+      - 'traefik.http.middlewares.authelia-basic.forwardauth.trustForwardHeader=true'
+      - 'traefik.http.middlewares.authelia-basic.forwardauth.authResponseHeaders=Remote-User, Remote-Groups, Remote-Name, Remote-Email'
+    expose:
+      - 9091
+    environment:
+      #- AUTHELIA_JWT_SECRET_FILE=/config/secrets/jwt
+      #- AUTHELIA_DUO_API_SECRET_KEY_FILE=/config/secrets/duo
+      #- AUTHELIA_SESSION_SECRET_FILE=/config/secrets/session
+      #- AUTHELIA_SESSION_REDIS_PASSWORD_FILE=/config/secrets/redis
+      #- AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE=/config/secrets/smtp
+      #- AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE=/config/secrets/ldap
+      - TZ=Europe/Paris
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+    volumes:
+      - ./authelia_redis:/data
+    networks:
+      - net
+    user: 1000:1000
+    expose:
+      - 6379
+    environment:
+      - TZ=Europe/Paris

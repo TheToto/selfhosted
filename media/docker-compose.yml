@@ -8,131 +8,167 @@ services:
     restart: unless-stopped
     volumes:
       - /dev/net:/dev/net:z # tun device
-      - ${ROOT}/config/vpn:/vpn # OpenVPN configuration
+      - ./config/vpn:/vpn # OpenVPN configuration
     security_opt:
       - label:disable
     expose:
       - 8112 # Deluge Web UI on VPN network
-      - 58846
+      - 58846 # TODO: what is that ?
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.deluge.rule=Host(`deluge.thetoto.fr`) || Host(`deluge.local`)'
+      - 'traefik.http.routers.deluge.entrypoints=https'
+      - 'traefik.http.routers.deluge.middlewares=authelia@docker'
+      - 'traefik.http.services.deluge.loadbalancer.server.port=8112'
+      - 'traefik.http.services.deluge.loadbalancer.healthcheck.interval=2Os'
+      - 'traefik.http.services.deluge.loadbalancer.healthcheck.timeout=10s'
+        
     command: '-r 192.168.1.0/24' # route local network traffic
 
   deluge:
     container_name: deluge
     image: linuxserver/deluge:latest
     restart: unless-stopped
-    network_mode: service:vpn # run on the vpn network
+    network_mode: service:vpn # run deluge througt the vpn network
     environment:
-      - PUID=${PUID} # default user id, defined in .env 
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - ${ROOT}/downloads:/downloads # downloads folder
-      - ${ROOT}/config/deluge:/config # config files
+      - ./downloads:/downloads
+      - ./config/deluge:/config
 
   jackett:
     container_name: jackett
     image: linuxserver/jackett:development
     restart: unless-stopped
     environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${ROOT}/downloads/torrent:/downloads # place where to put .torrent files for manual download
-      - ${ROOT}/config/jackett:/config # config files
+      - ./downloads/torrent:/downloads # place where to put .torrent files for manual download
+      - ./config/jackett:/config
     expose:
       - 9117
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.jackett.entrypoints=https'
+      - 'traefik.http.routers.jackett.middlewares=authelia@docker'
 
   sonarr:
     container_name: sonarr
     image: linuxserver/sonarr:latest
     restart: unless-stopped
     environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${ROOT}/config/sonarr:/config # config files
-      - ${ROOT}/tv:/tv # tv shows folder
-      - ${ROOT}/downloads:/downloads # download folder
+      - ./config/sonarr:/config
+      - ./tv:/tv # tv shows folder
+      - ./downloads:/downloads # download folder
     expose:
       - 8989
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.sonarr.entrypoints=https'
+      - 'traefik.http.routers.sonarr.middlewares=authelia@docker'
 
   radarr:
     container_name: radarr
     image: linuxserver/radarr:latest
     restart: unless-stopped
     environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${ROOT}/config/radarr:/config # config files
-      - ${ROOT}/movies:/movies # movies folder
-      - ${ROOT}/downloads:/downloads # download folder
+      - ./config/radarr:/config
+      - ./movies:/movies # movies folder
+      - ./downloads:/downloads # download folder
     expose:
       - 7878
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.radarr.entrypoints=https'
+      - 'traefik.http.routers.radarr.middlewares=authelia@docker'
 
   bazarr:
     container_name: bazarr
     image: linuxserver/bazarr:latest
     restart: unless-stopped
     environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - ${ROOT}/config/bazarr:/config # config files
-      - ${ROOT}/movies:/movies # movies folder
-      - ${ROOT}/tv:/tv # tv shows folder
+      - ./config/bazarr:/config
+      - ./movies:/movies # movies folder
+      - ./tv:/tv # tv shows folder
     expose:
       - 6767
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.bazarr.entrypoints=https'
+      - 'traefik.http.routers.bazarr.middlewares=authelia@docker'
 
   ombi:
     container_name: ombi
     image: linuxserver/ombi:latest
     restart: unless-stopped
     environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - ${ROOT}/config/ombi:/config # config files
+      - ./config/ombi:/config
     expose:
       - 3579
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.ombi.entrypoints=https'
 
   organizr:
     container_name: organizr
     image: linuxserver/organizr:latest
     restart: unless-stopped
     environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - ${ROOT}/config/organizr:/config # config files
+      - ./config/organizr:/config
     expose:
       - 80
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.media.rule=Host(`media.thetoto.fr`) || Host(`media.local`)'
+      - 'traefik.http.routers.media.entrypoints=https'
 
+# Working but useless in my setup.
 #  tautulli:
 #    container_name: tautulli
 #    image: linuxserver/tautulli:latest
 #    restart: unless-stopped
 #    environment:
-#      - PUID=${PUID} # default user id, defined in .env
-#      - PGID=${PGID} # default group id, defined in .env
-#      - TZ=${TZ} # timezone, defined in .env
+#      - PUID=${PUID}
+#      - PGID=${PGID}
+#      - TZ=${TZ}
 #    volumes:
 #      - /etc/localtime:/etc/localtime:ro
-#      - ${ROOT}/config/tautulli:/config # config files
-#      - ${ROOT}/config/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs
+#      - ./config/tautulli:/config
+#      - ./config/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs
+#    labels:
+#      - 'traefik.enable=true'
+#      - 'traefik.http.routers.tautulli.entrypoints=https'
 #    expose:
 #      - 8181
 
 networks:
   default:
     external:
-      name: openresty_default
+      name: global_net

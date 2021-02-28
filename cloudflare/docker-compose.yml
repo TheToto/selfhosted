@@ -1,0 +1,35 @@
+version: '3.3'
+
+networks:
+  default:
+    external:
+      name: global_net
+
+services:
+  cloudflare-companion:
+    # Auto add DNS records to Cloudflare from Traefik Host
+    image: tiredofit/traefik-cloudflare-companion:latest
+    container_name: cloudflare-companion
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - net
+    environment:
+      - CF_EMAIL=${CF_EMAIL}
+      - CF_TOKEN=${CF_TOKEN}
+      - REFRESH_ENTRIES=True
+      - TARGET_DOMAIN=${SECRET_SUBDOMAIN}.thetoto.fr
+      - DOMAIN1=thetoto.fr
+      - DOMAIN1_ZONE_ID=e580048bb1ed4d3c003f0922307cf228
+      - DOMAIN1_PROXIED=True
+
+  cloudflare-ddns:
+    # Auto set main DNS record to public IP
+    image: oznu/cloudflare-ddns:latest
+    restart: unless-stopped
+    environment:
+      - API_KEY=${CF_API_KEY}
+      - ZONE=thetoto.fr
+      - SUBDOMAIN=${SECRET_SUBDOMAIN}
+      - PROXIED=false

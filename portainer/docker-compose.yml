@@ -1,0 +1,25 @@
+version: '3.8'
+
+networks:
+  default:
+    external:
+      name: global_net
+
+services:
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:latest
+    restart: unless-stopped
+    command: -H unix:///var/run/docker.sock
+    expose:
+      - 9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./data:/data
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.portainer.entrypoints=https'
+      - 'traefik.http.routers.portainer.middlewares=authelia@docker'
+      - 'traefik.http.services.portainer.loadbalancer.server.port=9000'

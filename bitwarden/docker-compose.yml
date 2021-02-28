@@ -1,19 +1,27 @@
 version: '3'
 
 services:
-  bitwarden:
+  pass:
     image: bitwardenrs/server:latest
     restart: unless-stopped
     volumes:
-      - ${BITWARDEN_DIR}:/data
+      - ./data:/data
     environment:
       WEBSOCKET_ENABLED: 'true' # Required to use websockets
       SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
     expose:
       - 80
       - 3012
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.bitwarden-ui.entrypoints=https'
+      - 'traefik.http.services.bitwarden-ui.loadbalancer.server.port=80'
+
+      - 'traefik.http.routers.bitwarden-websocket.rule=Host(`pass.thetoto.fr`) && Path(`/notifications/hub`)'
+      - 'traefik.http.routers.bitwarden-websocket.entrypoints=https'
+      - 'traefik.http.services.bitwarden-websocket.loadbalancer.server.port=3012'
 
 networks:
   default:
     external:
-      name: openresty_default
+      name: global_net
