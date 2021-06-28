@@ -6,15 +6,18 @@ services:
     image: homeassistant/home-assistant:stable
     volumes:
       - ./config:/config
-    environment:
-      - TZ=Europe/Paris
+      - /etc/localtime:/etc/localtime:ro
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.assistant.entrypoints=https'
+
+      - 'com.centurylinklabs.watchtower.enable=true'
+    networks:
+      - net
     expose:
       - 8123
 
 networks:
-  default:
+  net:
     external:
       name: global_net

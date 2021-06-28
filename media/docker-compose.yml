@@ -2,28 +2,26 @@ version: '3'
 services:
   vpn:
     container_name: vpn
-    image: dperson/openvpn-client:latest
+    image: ghcr.io/wfg/openvpn-client
     cap_add:
-      - net_admin # required to modify network interfaces
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
     restart: unless-stopped
     volumes:
-      - /dev/net:/dev/net:z # tun device
-      - ./config/vpn:/vpn # OpenVPN configuration
-    security_opt:
-      - label:disable
+      - ./config/vpn:/data/vpn # OpenVPN configuration
+    environment:
+      - SUBNETS=192.168.0.0/24,192.168.1.0/24
     expose:
       - 8112 # Deluge Web UI on VPN network
-      - 58846 # TODO: what is that ?
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.deluge.rule=Host(`deluge.thetoto.fr`) || Host(`deluge.local`)'
+      - 'traefik.http.routers.deluge.rule=Host(`deluge.thetoto.fr`)'
       - 'traefik.http.routers.deluge.entrypoints=https'
       - 'traefik.http.routers.deluge.middlewares=authelia@docker'
       - 'traefik.http.services.deluge.loadbalancer.server.port=8112'
-      - 'traefik.http.services.deluge.loadbalancer.healthcheck.interval=2Os'
-      - 'traefik.http.services.deluge.loadbalancer.healthcheck.timeout=10s'
-        
-    command: '-r 192.168.1.0/24' # route local network traffic
+
+      - 'com.centurylinklabs.watchtower.enable=false'
 
   deluge:
     container_name: deluge
@@ -35,20 +33,32 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ./downloads:/downloads
+      - ${DOWNLOADS}:/downloads
       - ./config/deluge:/config
+    labels:
+      - 'com.centurylinklabs.watchtower.enable=true'
+
+  flaresolverr: # For Jackett, set to "http://flaresolverr:8191"
+    container_name: flaresolverr
+    image: flaresolverr/flaresolverr:latest
+    restart: unless-stopped
+    expose:
+      - 8191
+    labels:
+      - 'com.centurylinklabs.watchtower.enable=true'
 
   jackett:
     container_name: jackett
-    image: linuxserver/jackett:development
+    image: linuxserver/jackett:latest
     restart: unless-stopped
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
+      - AUTO_UPDATE=true
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./downloads/torrent:/downloads # place where to put .torrent files for manual download
+      - ${DOWNLOADS}/torrent:/downloads # place where to put .torrent files for manual download
       - ./config/jackett:/config
     expose:
       - 9117
@@ -56,6 +66,8 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.jackett.entrypoints=https'
       - 'traefik.http.routers.jackett.middlewares=authelia@docker'
+
+      - 'com.centurylinklabs.watchtower.enable=true'
 
   sonarr:
     container_name: sonarr
@@ -68,14 +80,18 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/sonarr:/config
-      - ./tv:/tv # tv shows folder
-      - ./downloads:/downloads # download folder
+      - ${MEDIA}/Series:/tv # tv shows folder
+      - ${MEDIA}/AnimatedSeries:/cartoon # cartoon folder
+      - ${MEDIA}/Anime:/anime # anime folder
+      - ${DOWNLOADS}:/downloads # download folder
     expose:
       - 8989
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.sonarr.entrypoints=https'
       - 'traefik.http.routers.sonarr.middlewares=authelia@docker'
+
+      - 'com.centurylinklabs.watchtower.enable=true'
 
   radarr:
     container_name: radarr
@@ -88,8 +104,12 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/radarr:/config
-      - ./movies:/movies # movies folder
-      - ./downloads:/downloads # download folder
+      - ${MEDIA}/Movies:/movies # movies folder
+      - ${MEDIA}/AnimatedMovies:/animated_movies # animated movies folder
+      - ${MEDIA}/Ghibli:/ghibli
+      - ${MEDIA}/Dreamworks:/dreamworks
+      - ${MEDIA}/Disney:/disney
+      - ${DOWNLOADS}:/downloads # download folder
     expose:
       - 7878
     labels:
@@ -97,44 +117,70 @@ services:
       - 'traefik.http.routers.radarr.entrypoints=https'
       - 'traefik.http.routers.radarr.middlewares=authelia@docker'
 
-  bazarr:
-    container_name: bazarr
-    image: linuxserver/bazarr:latest
-    restart: unless-stopped
+      - 'com.centurylinklabs.watchtower.enable=true'
+
+#  bazarr:
+#    container_name: bazarr
+#    image: linuxserver/bazarr:latest
+#    restart: unless-stopped
+#    environment:
+#      - PUID=${PUID}
+#      - PGID=${PGID}
+#      - TZ=${TZ}
+#    volumes:
+#      - ./config/bazarr:/config
+#      - ${MEDIA}/movies:/movies # movies folder
+#      - ${MEDIA/tv:/tv # tv shows folder
+#    expose:
+#      - 6767
+#    labels:
+#      - 'traefik.enable=true'
+#      - 'traefik.http.routers.bazarr.entrypoints=https'
+#      - 'traefik.http.routers.bazarr.middlewares=authelia@docker'
+#
+#      - 'com.centurylinklabs.watchtower.enable=true'
+
+  overseerr:
+    container_name: overseerr
+    image: sctx/overseerr:latest
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ./config/bazarr:/config
-      - ./movies:/movies # movies folder
-      - ./tv:/tv # tv shows folder
+      - LOG_LEVEL=info
+      - TZ=Europe/Paris
     expose:
-      - 6767
+      - 5055
+    volumes:
+      - ./config/overseerr:/app/config
+    restart: unless-stopped
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.bazarr.entrypoints=https'
-      - 'traefik.http.routers.bazarr.middlewares=authelia@docker'
+      - 'traefik.http.routers.overseerr.entrypoints=https'
 
+      - 'com.centurylinklabs.watchtower.enable=true'
+
+
+  # Delete and redirect to overseerr when ready
   ombi:
     container_name: ombi
     image: linuxserver/ombi:latest
+    #image: morbz/docker-web-redirect
     restart: unless-stopped
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
+    #  - REDIRECT_TARGET=overseerr.thetoto.fr
     volumes:
       - ./config/ombi:/config
     expose:
       - 3579
+    #  - 80
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.ombi.entrypoints=https'
 
   organizr:
     container_name: organizr
-    image: linuxserver/organizr:latest
+    image: organizr/organizr:latest
     restart: unless-stopped
     environment:
       - PUID=${PUID}
@@ -146,27 +192,30 @@ services:
       - 80
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.media.rule=Host(`media.thetoto.fr`) || Host(`media.local`)'
+      - 'traefik.http.routers.media.rule=Host(`media.thetoto.fr`)'
       - 'traefik.http.routers.media.entrypoints=https'
 
-# Working but useless in my setup.
-#  tautulli:
-#    container_name: tautulli
-#    image: linuxserver/tautulli:latest
-#    restart: unless-stopped
-#    environment:
-#      - PUID=${PUID}
-#      - PGID=${PGID}
-#      - TZ=${TZ}
-#    volumes:
-#      - /etc/localtime:/etc/localtime:ro
-#      - ./config/tautulli:/config
-#      - ./config/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs
-#    labels:
-#      - 'traefik.enable=true'
-#      - 'traefik.http.routers.tautulli.entrypoints=https'
-#    expose:
-#      - 8181
+      - 'com.centurylinklabs.watchtower.enable=true'
+
+  tautulli:
+    container_name: tautulli
+    image: linuxserver/tautulli:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config/tautulli:/config
+      - ../plex/config/Library/Application Support/Plex Media Server/Logs:/logs
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.tautulli.entrypoints=https'
+
+      - 'com.centurylinklabs.watchtower.enable=true'
+    expose:
+      - 8181
 
 networks:
   default:

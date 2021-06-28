@@ -2,7 +2,7 @@ version: '3'
 
 services:
   pass:
-    image: bitwardenrs/server:latest
+    image: bitwardenrs/server:alpine
     restart: unless-stopped
     volumes:
       - ./data:/data
@@ -21,6 +21,7 @@ services:
       - 'traefik.http.routers.bitwarden-websocket.entrypoints=https'
       - 'traefik.http.services.bitwarden-websocket.loadbalancer.server.port=3012'
 
+      - 'com.centurylinklabs.watchtower.enable=true'
 networks:
   default:
     external:

@@ -1,7 +1,7 @@
 version: '3.3'
 
 networks:
-  default:
+  net:
     external:
       name: global_net
 
@@ -23,13 +23,3 @@ services:
       - DOMAIN1=thetoto.fr
       - DOMAIN1_ZONE_ID=e580048bb1ed4d3c003f0922307cf228
       - DOMAIN1_PROXIED=True
-
-  cloudflare-ddns:
-    # Auto set main DNS record to public IP
-    image: oznu/cloudflare-ddns:latest
-    restart: unless-stopped
-    environment:
-      - API_KEY=${CF_API_KEY}
-      - ZONE=thetoto.fr
-      - SUBDOMAIN=${SECRET_SUBDOMAIN}
-      - PROXIED=false

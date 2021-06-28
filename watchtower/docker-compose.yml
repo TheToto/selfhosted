@@ -1,0 +1,15 @@
+version: "3.5"
+
+services:
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower:latest
+    restart: unless-stopped
+    environment:
+      - "TZ=Europe/Paris"
+      - "WATCHTOWER_NOTIFICATIONS=slack"
+      - "WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL=${DISCORD_WEBHOOKURL}/slack"
+      - "WATCHTOWER_SCHEDULE=@weekly"
+      - "WATCHTOWER_LABEL_ENABLE=true"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"

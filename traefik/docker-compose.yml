@@ -4,8 +4,18 @@ networks:
   net:
     driver: bridge
     name: global_net
+  socket_docker:
 
 services:
+  dockerproxy:
+    image: tecnativa/docker-socket-proxy
+    environment:
+      - CONTAINERS=1
+    networks:
+      - socket_docker
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
   traefik:
     image: traefik:v2.2
     container_name: traefik
@@ -14,14 +24,21 @@ services:
       - auth
     volumes:
       - ./traefik/acme.json:/acme.json
-      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - net
+      - socket_docker
+    user: 1000:1000
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 0
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.api.entrypoints=https'
       - 'traefik.http.routers.api.service=api@internal'
-      - 'traefik.http.routers.api.middlewares=authelia@docker'
+      - 'traefik.http.routers.api.middlewares=localOnly@docker'
+
+      - 'traefik.http.middlewares.localOnly.ipwhitelist.sourcerange=127.0.0.1/32, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16'
+
+      - 'com.centurylinklabs.watchtower.monitor-only=true'
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_API_KEY=${CF_API_KEY}
@@ -33,7 +50,8 @@ services:
 
       - '--providers.docker=true'
       - '--providers.docker.exposedByDefault=false'
-      - '--providers.docker.defaultRule=Host(`{{ index .Labels "com.docker.compose.service"}}.thetoto.fr`) || Host(`{{ index .Labels "com.docker.compose.service"}}.local`)'
+      - '--providers.docker.endpoint=tcp://dockerproxy:2375'
+      - '--providers.docker.defaultRule=Host(`{{ index .Labels "com.docker.compose.service"}}.thetoto.fr`)'
 
         # Accept connections on :80 but redirect to :443
       - '--entrypoints.http=true'
@@ -50,7 +68,8 @@ services:
       - '--certificatesResolvers.letsencrypt.acme.storage=acme.json'
       - '--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare'
         # Staging
-      - '--certificatesResolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
+        #- '--certificatesResolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
+      - '--certificatesResolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory'
 
       - '--log=true'
       - '--log.level=DEBUG'
@@ -75,15 +94,15 @@ services:
       - 'traefik.http.middlewares.authelia-basic.forwardauth.address=http://authelia:9091/api/verify?auth=basic'
       - 'traefik.http.middlewares.authelia-basic.forwardauth.trustForwardHeader=true'
       - 'traefik.http.middlewares.authelia-basic.forwardauth.authResponseHeaders=Remote-User, Remote-Groups, Remote-Name, Remote-Email'
+
+      - 'com.centurylinklabs.watchtower.enable=true'
     expose:
       - 9091
     environment:
-      #- AUTHELIA_JWT_SECRET_FILE=/config/secrets/jwt
-      #- AUTHELIA_DUO_API_SECRET_KEY_FILE=/config/secrets/duo
-      #- AUTHELIA_SESSION_SECRET_FILE=/config/secrets/session
-      #- AUTHELIA_SESSION_REDIS_PASSWORD_FILE=/config/secrets/redis
-      #- AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE=/config/secrets/smtp
-      #- AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE=/config/secrets/ldap
+      - AUTHELIA_JWT_SECRET_FILE=/config/secrets/jwt
+      - AUTHELIA_SESSION_SECRET_FILE=/config/secrets/session
+      - AUTHELIA_IDENTITY_PROVIDERS_OIDC_ISSUER_PRIVATE_KEY_FILE=/config/secrets/oidc_private
+      - AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE=/config/secrets/oidc_hmac
       - TZ=Europe/Paris
 
   redis:

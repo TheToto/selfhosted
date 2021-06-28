@@ -8,18 +8,38 @@ services:
       - PUID=${PUID} # default user id, defined in .env
       - PGID=${PGID} # default group id, defined in .env
       - TZ=${TZ} # timezone, defined in .env
-      - ADVERTISE_IP=192.168.1.31
+      #- PLEX_CLAIM=
     volumes:
       - ./config:/config # plex database
-      - ${GDRIVE_DIR}:/gdrive # google drive
+      - ${MEDIA}:/media # media files
+    devices:
+      - /dev/dri:/dev/dri
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.plex.entrypoints=https'
-      - "traefik.http.services.plex.loadbalancer.server.port=32400"
+      - 'traefik.http.routers.plex.middlewares=plex-headers'
+      - 'traefik.http.services.plex.loadbalancer.server.port=32400'
+
+      - 'traefik.http.middlewares.plex-headers.headers.SSLRedirect=true'
+      - 'traefik.http.middlewares.plex-headers.headers.STSSeconds=315360000'
+      - 'traefik.http.middlewares.plex-headers.headers.browserXSSFilter=true'
+      - 'traefik.http.middlewares.plex-headers.headers.contentTypeNosniff=true'
+      - 'traefik.http.middlewares.plex-headers.headers.forceSTSHeader=true'
+      - 'traefik.http.middlewares.plex-headers.headers.SSLHost=thetoto.fr'
+      - 'traefik.http.middlewares.plex-headers.headers.STSIncludeSubdomains=true'
+      - 'traefik.http.middlewares.plex-headers.headers.STSPreload=true'
+      - 'traefik.http.middlewares.plex-headers.headers.sslproxyheaders.X-Forwarded-Proto=https'
+      - 'traefik.http.middlewares.plex-headers.headers.frameDeny=true'
+
+      - 'com.centurylinklabs.watchtower.enable=true'
+
       # - networks=bridge
     ports: # https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/
       # TODO: Try to remove this port and use plex on 443 port.
       - 32400:32400
+      - 32410-32414:32410-32414/udp # GDM
+      - 1900:1900/udp # DLNA
+      - 32469:32469 # DLNA
 
 networks:
   default:

@@ -21,6 +21,8 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.gitea.entrypoints=https'
       - 'traefik.http.services.gitea.loadbalancer.server.port=3000'
+
+      - 'com.centurylinklabs.watchtower.enable=true'
     expose:
       - 3000
     ports:

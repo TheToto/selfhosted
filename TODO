@@ -1,5 +1,2 @@
 - Docker as non root user
-- Watchtower
 - Fail2ban
-- Rclone in docker
-- Move all configs
