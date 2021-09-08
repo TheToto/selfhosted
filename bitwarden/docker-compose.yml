@@ -8,18 +8,21 @@ services:
       - ./data:/data
     environment:
       WEBSOCKET_ENABLED: 'true' # Required to use websockets
-      SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
+      SIGNUPS_ALLOWED: 'true'   # set to false to disable signups
     expose:
       - 80
       - 3012
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.bitwarden-ui.entrypoints=https'
-      - 'traefik.http.services.bitwarden-ui.loadbalancer.server.port=80'
+      - 'traefik.http.routers.pass.entrypoints=https'
+      - 'traefik.http.routers.pass.service=pass'
+      - 'traefik.http.services.pass.loadbalancer.server.port=80'
 
-      - 'traefik.http.routers.bitwarden-websocket.rule=Host(`pass.thetoto.fr`) && Path(`/notifications/hub`)'
-      - 'traefik.http.routers.bitwarden-websocket.entrypoints=https'
-      - 'traefik.http.services.bitwarden-websocket.loadbalancer.server.port=3012'
+      - 'traefik.http.routers.pass-websocket.entrypoints=https'
+      - 'traefik.http.routers.pass-websocket.rule=Host(`pass.thetoto.fr`) && Path(`/notifications/hub`)'
+      - 'traefik.http.routers.pass-websocket.service=pass-websocket'
+      - 'traefik.http.services.pass-websocket.loadbalancer.server.port=3012'
+
 
       - 'com.centurylinklabs.watchtower.enable=true'
 networks:

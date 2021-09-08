@@ -47,6 +47,25 @@ services:
     labels:
       - 'com.centurylinklabs.watchtower.enable=true'
 
+  prowlarr:
+    container_name: prowlarr
+    image: linuxserver/prowlarr:develop
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ./config/prowlarr:/config
+    expose:
+      - 9696
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.prowlarr.entrypoints=https'
+      - 'traefik.http.routers.prowlarr.middlewares=authelia@docker'
+
+      - 'com.centurylinklabs.watchtower.enable=true'
+
   jackett:
     container_name: jackett
     image: linuxserver/jackett:latest

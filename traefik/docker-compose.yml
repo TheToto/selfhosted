@@ -17,7 +17,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
 
   traefik:
-    image: traefik:v2.2
+    image: traefik:v2.5
     container_name: traefik
     restart: unless-stopped
     depends_on:
@@ -74,6 +74,8 @@ services:
       - '--log=true'
       - '--log.level=DEBUG'
       #- '--log.filepath=/var/log/traefik.log'
+
+      - '--metrics.prometheus=true'
 
   auth:
     image: authelia/authelia:latest
