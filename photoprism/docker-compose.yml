@@ -18,7 +18,7 @@ services:
       PHOTOPRISM_SITE_URL: "https://photo.thetoto.fr/"  # Canonical / public site URL
       PHOTOPRISM_SITE_TITLE: "TheToto Photos"
       PHOTOPRISM_SITE_CAPTION: "Save my life"
-      PHOTOPRISM_SITE_DESCRIPTION: "Petite description"
+      PHOTOPRISM_SITE_DESCRIPTION: "An open source Google Photos alternative"
       PHOTOPRISM_SITE_AUTHOR: "TheToto"
       PHOTOPRISM_HTTP_HOST: "0.0.0.0"
       PHOTOPRISM_HTTP_PORT: 2342
@@ -54,6 +54,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.photoprism.entrypoints=https'
       - 'traefik.http.routers.photoprism.middlewares=localOnly@docker'
+      - 'traefik.http.routers.photoprism.middlewares=authelia@docker'
 
       - 'com.centurylinklabs.watchtower.enable=true'
 

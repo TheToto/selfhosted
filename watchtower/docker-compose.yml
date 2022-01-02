@@ -9,7 +9,8 @@ services:
       - "TZ=Europe/Paris"
       - "WATCHTOWER_NOTIFICATIONS=slack"
       - "WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL=${DISCORD_WEBHOOKURL}/slack"
-      - "WATCHTOWER_SCHEDULE=@weekly"
+      - "WATCHTOWER_SCHEDULE=0 0 4 * * *"
       - "WATCHTOWER_LABEL_ENABLE=true"
+      - "WATCHTOWER_CLEANUP=true"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"

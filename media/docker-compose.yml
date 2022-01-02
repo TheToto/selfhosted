@@ -49,7 +49,7 @@ services:
 
   prowlarr:
     container_name: prowlarr
-    image: linuxserver/prowlarr:develop
+    image: linuxserver/prowlarr:nightly
     restart: unless-stopped
     environment:
       - PUID=${PUID}
@@ -66,27 +66,27 @@ services:
 
       - 'com.centurylinklabs.watchtower.enable=true'
 
-  jackett:
-    container_name: jackett
-    image: linuxserver/jackett:latest
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - AUTO_UPDATE=true
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${DOWNLOADS}/torrent:/downloads # place where to put .torrent files for manual download
-      - ./config/jackett:/config
-    expose:
-      - 9117
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.jackett.entrypoints=https'
-      - 'traefik.http.routers.jackett.middlewares=authelia@docker'
-
-      - 'com.centurylinklabs.watchtower.enable=true'
+#  jackett:
+#    container_name: jackett
+#    image: linuxserver/jackett:latest
+#    restart: unless-stopped
+#    environment:
+#      - PUID=${PUID}
+#      - PGID=${PGID}
+#      - TZ=${TZ}
+#      - AUTO_UPDATE=true
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - ${DOWNLOADS}/torrent:/downloads # place where to put .torrent files for manual download
+#      - ./config/jackett:/config
+#    expose:
+#      - 9117
+#    labels:
+#      - 'traefik.enable=true'
+#      - 'traefik.http.routers.jackett.entrypoints=https'
+#      - 'traefik.http.routers.jackett.middlewares=authelia@docker'
+#
+#      - 'com.centurylinklabs.watchtower.enable=true'
 
   sonarr:
     container_name: sonarr
@@ -161,14 +161,14 @@ services:
 
   overseerr:
     container_name: overseerr
-    image: sctx/overseerr:latest
+    image: linuxserver/overseerr:latest
     environment:
       - LOG_LEVEL=info
       - TZ=Europe/Paris
     expose:
       - 5055
     volumes:
-      - ./config/overseerr:/app/config
+      - ./config/overseerr:/config
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
@@ -180,41 +180,41 @@ services:
   # Delete and redirect to overseerr when ready
   ombi:
     container_name: ombi
-    image: linuxserver/ombi:latest
-    #image: morbz/docker-web-redirect
+    #image: linuxserver/ombi:latest
+    image: morbz/docker-web-redirect
     restart: unless-stopped
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-    #  - REDIRECT_TARGET=overseerr.thetoto.fr
+      - REDIRECT_TARGET=overseerr.thetoto.fr
     volumes:
       - ./config/ombi:/config
     expose:
-      - 3579
-    #  - 80
+    #  - 3579
+      - 80
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.ombi.entrypoints=https'
 
-  organizr:
-    container_name: organizr
-    image: organizr/organizr:latest
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ./config/organizr:/config
-    expose:
-      - 80
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.media.rule=Host(`media.thetoto.fr`)'
-      - 'traefik.http.routers.media.entrypoints=https'
-
-      - 'com.centurylinklabs.watchtower.enable=true'
+#  organizr:
+#    container_name: organizr
+#    image: organizr/organizr:latest
+#    restart: unless-stopped
+#    environment:
+#      - PUID=${PUID}
+#      - PGID=${PGID}
+#      - TZ=${TZ}
+#    volumes:
+#      - ./config/organizr:/config
+#    expose:
+#      - 80
+#    labels:
+#      - 'traefik.enable=true'
+#      - 'traefik.http.routers.media.rule=Host(`media.thetoto.fr`)'
+#      - 'traefik.http.routers.media.entrypoints=https'
+#
+#      - 'com.centurylinklabs.watchtower.enable=true'
 
   tautulli:
     container_name: tautulli

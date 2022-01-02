@@ -9,6 +9,7 @@ networks:
 services:
   dockerproxy:
     image: tecnativa/docker-socket-proxy
+    restart: unless-stopped
     environment:
       - CONTAINERS=1
     networks:
@@ -27,7 +28,7 @@ services:
     networks:
       - net
       - socket_docker
-    user: 1000:1000
+    #user: 1000:1000
     sysctls:
       net.ipv4.ip_unprivileged_port_start: 0
     labels:
@@ -42,11 +43,14 @@ services:
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_API_KEY=${CF_API_KEY}
+    extra_hosts:
+      - host.docker.internal:192.168.0.10 # For net=host containers (local ip)
     ports:
       - 80:80
       - 443:443
     command:
       - '--api'
+      - '--pilot.token=${PILOT_KEY}'
 
       - '--providers.docker=true'
       - '--providers.docker.exposedByDefault=false'
@@ -68,7 +72,7 @@ services:
       - '--certificatesResolvers.letsencrypt.acme.storage=acme.json'
       - '--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare'
         # Staging
-        #- '--certificatesResolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
+      #- '--certificatesResolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
       - '--certificatesResolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory'
 
       - '--log=true'

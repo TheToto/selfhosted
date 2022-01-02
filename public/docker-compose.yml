@@ -1,0 +1,26 @@
+version: "2"
+
+networks:
+  net:
+    external:
+      name: global_net
+
+services:
+  public:
+    container_name: public
+    image: halverneus/static-file-server:v1.8.3
+    expose:
+      - 8080
+    networks:
+      net:
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.public.entrypoints=https'
+
+      - 'com.centurylinklabs.watchtower.enable=false'
+    environment:
+      - CORS=true
+      - SHOW_LISTING=true
+    volumes:
+      - /mnt/storage/public:/web
+    restart: unless-stopped
