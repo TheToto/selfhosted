@@ -1,7 +1,7 @@
-version: "2"
+version: "3"
 
 networks:
-  net:
+  default:
     external:
       name: global_net
 
@@ -12,8 +12,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./data:/data
-    ports:
-      - 1333:1333
+    expose:
+      - 1333
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.joal.entrypoints=https'
