@@ -4,21 +4,30 @@ networks:
   net:
     external:
       name: global_net
+  backend:
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
 
 services:
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
     hostname: pihole
-    dns:
-      - 192.168.0.1 # Set gateway DNS
+    depends_on:
+      - dhcphelper
+    #dns:
+    #  - 192.168.0.1 # Set gateway DNS
     ports:
       - "53:53/tcp"
       - "53:53/udp"
+    #  - "67:67/udp"
     expose:
       - 80
     networks:
-      net:
+      net: {}
+      backend:
+        ipv4_address: '172.21.0.100'
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.pihole.entrypoints=https'
@@ -30,8 +39,19 @@ services:
       TZ: 'Europe/Paris'
       WEBPASSWORD: '' # Disable password (we are behind Authelia)
       VIRTUAL_HOST: 'pihole.thetoto.fr'
-      ServerIP: '192.168.0.10' # Local host IP
+      ServerIP: '192.168.1.2' # Local host IP
+      DNSMASQ_LISTENING: 'all'
     volumes:
       - './etc-pihole/:/etc/pihole/'
       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    cap_add:
+      - NET_ADMIN
     restart: unless-stopped
+
+  dhcphelper:
+    build: ./dhcp-helper
+    restart: unless-stopped
+    network_mode: host
+    command: -s 172.21.0.100
+    cap_add:
+      - NET_ADMIN
