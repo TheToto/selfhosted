@@ -22,5 +22,6 @@ services:
       - CORS=true
       - SHOW_LISTING=true
     volumes:
-      - /mnt/storage/public:/web
+      - /mnt/storage/public:/web/other
+      - ./files:/web
     restart: unless-stopped

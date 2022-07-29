@@ -1,7 +1,7 @@
 {
-  "minUploadRate" : 30,
-  "maxUploadRate" : 250,
-  "simultaneousSeed" : 5,
-  "client" : "transmission-3.00.client",
+  "minUploadRate" : 500,
+  "maxUploadRate" : 2500,
+  "simultaneousSeed" : 30,
+  "client" : "deluge-1.3.15.client",
   "keepTorrentWithZeroLeechers" : false
 }

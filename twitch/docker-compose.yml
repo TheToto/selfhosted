@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  twitch:
+    image: tkdalex/twitch-channel-points-miner-v2
+    restart: unless-stopped
+    tty: true
+    environment:
+      - TERM=xterm-256color
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.twitch.entrypoints=https'
+      - 'traefik.http.routers.twitch.middlewares=authelia@docker'
+
+      - 'com.centurylinklabs.watchtower.enable=true'
+    volumes:
+      - ./analytics:/usr/src/app/analytics
+      - ./cookies:/usr/src/app/cookies
+      - ./logs:/usr/src/app/logs
+      - ./run.py:/usr/src/app/run.py:ro
+    expose:
+      - 5000
+
+networks:
+  default:
+    external:
+      name: global_net
