@@ -18,13 +18,14 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
 
   traefik:
-    image: traefik:v2.5
+    image: traefik:v2.9
     container_name: traefik
     restart: unless-stopped
     depends_on:
       - auth
     volumes:
       - ./traefik/acme.json:/acme.json
+      - ./traefik/data:/data
     networks:
       - net
       - socket_docker
@@ -38,12 +39,14 @@ services:
       - 'traefik.http.routers.api.middlewares=authelia@docker'
 
       - 'traefik.http.middlewares.localOnly.ipwhitelist.sourcerange=127.0.0.1/32, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16'
+      - 'traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/verify?rd=https://auth.thetoto.fr'
+      - 'traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true'
+      - 'traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User, Remote-Groups, Remote-Name, Remote-Email'
+      - 'traefik.http.middlewares.authelia-basic.forwardauth.address=http://authelia:9091/api/verify?auth=basic'
+      - 'traefik.http.middlewares.authelia-basic.forwardauth.trustForwardHeader=true'
+      - 'traefik.http.middlewares.authelia-basic.forwardauth.authResponseHeaders=Remote-User, Remote-Groups, Remote-Name, Remote-Email'
 
       - 'com.centurylinklabs.watchtower.monitor-only=true'
-
-      - 'traefik.http.middlewares.test-errorpage.errors.status=400-599'
-      - 'traefik.http.middlewares.test-errorpage.errors.service=serviceError'
-      - 'traefik.http.middlewares.test-errorpage.errors.query=/errors/{status}.html'
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_API_KEY=${CF_API_KEY}
@@ -74,7 +77,7 @@ services:
       - '--entrypoints.https.http.tls.certResolver=letsencrypt'
       - '--entrypoints.https.http.tls.domains[0].main=thetoto.fr'
       - '--entrypoints.https.http.tls.domains[0].sans=*.thetoto.fr'
-      - '--entrypoints.https.http.middlewares=error-pages@docker'
+      #- '--entrypoints.https.http.middlewares=error-pages@docker'
 
       - '--certificatesResolvers.letsencrypt.acme.storage=acme.json'
       - '--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare'
@@ -86,7 +89,8 @@ services:
       #- '--log.level=DEBUG'
       #- '--log.filepath=/var/log/traefik.log'
 
-      - '--metrics.prometheus=true'
+      - '--accesslog.filepath=/data/access.log'
+      #- '--metrics.prometheus=true'
 
   auth:
     image: authelia/authelia:latest
@@ -101,13 +105,6 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.authelia.entrypoints=https'
 
-      - 'traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/verify?rd=https://auth.thetoto.fr'
-      - 'traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true'
-      - 'traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User, Remote-Groups, Remote-Name, Remote-Email'
-      - 'traefik.http.middlewares.authelia-basic.forwardauth.address=http://authelia:9091/api/verify?auth=basic'
-      - 'traefik.http.middlewares.authelia-basic.forwardauth.trustForwardHeader=true'
-      - 'traefik.http.middlewares.authelia-basic.forwardauth.authResponseHeaders=Remote-User, Remote-Groups, Remote-Name, Remote-Email'
-
       - 'com.centurylinklabs.watchtower.enable=true'
     expose:
       - 9091
@@ -116,20 +113,6 @@ services:
       - AUTHELIA_SESSION_SECRET_FILE=/config/secrets/session
       - AUTHELIA_IDENTITY_PROVIDERS_OIDC_ISSUER_PRIVATE_KEY_FILE=/config/secrets/oidc_private
       - AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE=/config/secrets/oidc_hmac
-      - TZ=Europe/Paris
-
-  redis:
-    image: redis:alpine
-    container_name: redis
-    restart: unless-stopped
-    volumes:
-      - ./authelia_redis:/data
-    networks:
-      - net
-    user: 1000:1000
-    expose:
-      - 6379
-    environment:
       - TZ=Europe/Paris
 
   nginxError:
@@ -147,12 +130,61 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.error-router.entrypoints=https'
+      - 'traefik.http.services.error-pages-service.loadbalancer.server.port=80'
 
       - 'traefik.http.routers.error-router.rule=HostRegexp(`{host:.+}`)'
       - 'traefik.http.routers.error-router.priority=1'
+      - 'traefik.http.routers.error-router.middlewares=error-pages@docker'
   
       - 'traefik.http.middlewares.error-pages.errors.status=400-599'
       - 'traefik.http.middlewares.error-pages.errors.service=error-pages-service'
       - 'traefik.http.middlewares.error-pages.errors.query=/{status}.html'
 
-      - 'traefik.http.services.error-pages-service.loadbalancer.server.port=80'
+      - 'com.centurylinklabs.watchtower.enable=true'
+
+  goaccess:
+    image: allinurl/goaccess
+    restart: always
+    depends_on:
+      - traefik
+    command: > 
+      /srv/logs/access.log
+      -o /srv/report/index.html
+      --real-time-html
+      --origin=https://access.thetoto.fr
+      --ws-url=wss://access.thetoto.fr:443/live
+      --log-format='%h %^[%d:%t %^] "%r" %s %b %R %u %^ %v %^ %Lms'
+      --time-format='%H:%M:%S'
+      --date-format='%d/%b/%Y'
+      --db-path=/srv/data
+      --persist
+      --restore
+    networks:
+      - net
+    expose:
+      - 7890
+    volumes:
+      - ./traefik/data:/srv/logs:ro
+      - ./goaccess/web:/srv/report
+      - ./goaccess/data:/srv/data
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.goaccess.entrypoints=https'
+      - 'traefik.http.routers.goaccess.rule=Host(`access.thetoto.fr`) && Path(`/live`)' # TODO: How to protect this endpoint behind authelia ?
+
+      - 'com.centurylinklabs.watchtower.enable=true'
+
+  access:
+    image: halverneus/static-file-server:latest
+    depends_on:
+      - goaccess
+    networks:
+      - net
+    volumes:
+      - ./goaccess/web:/web
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.access.entrypoints=https'
+      - 'traefik.http.routers.access.middlewares=authelia@docker'
+
+      - 'com.centurylinklabs.watchtower.enable=true'
