@@ -2,7 +2,7 @@ version: "2.1"
 
 services:
   calibre:
-    image: lscr.io/linuxserver/calibre-web:0.6.20
+    image: lscr.io/linuxserver/calibre-web:5.33.2
     restart: unless-stopped
     networks:
       - global_net
