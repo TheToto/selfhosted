@@ -2,7 +2,7 @@ version: '3'
 
 services:
   plex:
-    image: linuxserver/plex:1.32.3
+    image: lscr.io/linuxserver/plex:1.32.3
     restart: unless-stopped
     networks:
       - global_net

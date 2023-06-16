@@ -2,7 +2,7 @@ version: '3'
 
 services:
   torrent:
-    image: linuxserver/qbittorrent:4.5.3
+    image: lscr.io/linuxserver/qbittorrent:4.5.3
     restart: unless-stopped
     networks:
       - global_net
@@ -27,7 +27,7 @@ services:
     #  - 8191:8191
 
   prowlarr:
-    image: linuxserver/prowlarr:1.5.2
+    image: lscr.io/linuxserver/prowlarr:1.5.2
     restart: unless-stopped
     networks:
       - global_net
@@ -42,7 +42,7 @@ services:
       - 'traefik.http.routers.prowlarr.middlewares=authentik@docker'
 
   sonarr:
-    image: linuxserver/sonarr:3.0.10
+    image: lscr.io/linuxserver/sonarr:3.0.10
     restart: unless-stopped
     networks:
       - global_net
@@ -60,7 +60,7 @@ services:
       - 'traefik.http.routers.sonarr.middlewares=authentik@docker'
 
   radarr:
-    image: linuxserver/radarr:4.5.2
+    image: lscr.io/linuxserver/radarr:4.5.2
     restart: unless-stopped
     networks:
       - global_net
@@ -78,7 +78,7 @@ services:
       - 'traefik.http.routers.radarr.middlewares=authentik@docker'
 
   overseerr:
-    image: linuxserver/overseerr:1.33.0
+    image: lscr.io/linuxserver/overseerr:1.33.0
     networks:
       - global_net
     environment:
@@ -94,7 +94,7 @@ services:
       - 'traefik.http.routers.overseerr.entrypoints=https'
 
   tautulli:
-    image: linuxserver/tautulli:2.12.4
+    image: lscr.io/linuxserver/tautulli:2.12.4
     restart: unless-stopped
     networks:
       - global_net
