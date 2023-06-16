@@ -1,0 +1,39 @@
+version: "2.1"
+
+services:
+  calibre:
+    image: linuxserver/calibre-web:0.6.20
+    restart: unless-stopped
+    networks:
+      - global_net
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - DOCKER_MODS=linuxserver/mods:universal-calibre
+    volumes:
+      - ${HOST_PATH}/calibre-web:/config
+      - ${HOST_PATH}/books:/books
+    #ports:
+    #  - 8083:8083
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.calibre.entrypoints=https'
+      - 'traefik.http.services.calibre.loadbalancer.server.port=8083'
+
+      - "traefik.http.middlewares.https-headers-books.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.https-headers-books.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.https-headers-books.headers.frameDeny=true"
+      - "traefik.http.middlewares.https-headers-books.headers.SSLRedirect=true"
+      - "traefik.http.middlewares.https-headers-books.headers.STSIncludeSubdomains=true"
+      - "traefik.http.middlewares.https-headers-books.headers.STSPreload=true"
+      - "traefik.http.middlewares.https-headers-books.headers.STSSeconds=31536000"
+      - "traefik.http.middlewares.https-headers-books.headers.customFrameOptionsValue=SAMEORIGIN"
+
+      - 'traefik.http.routers.calibre.middlewares=https-headers-books,kobo-sync-headers,authentik@docker'
+
+      - 'traefik.http.middlewares.kobo-sync-headers.headers.customrequestheaders.X-Scheme=https'
+
+networks:
+  global_net:
+    external: true

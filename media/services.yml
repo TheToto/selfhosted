@@ -1,0 +1,112 @@
+version: '3'
+
+services:
+  torrent:
+    image: linuxserver/qbittorrent:4.5.3
+    restart: unless-stopped
+    networks:
+      - global_net
+    volumes:
+      - ${DOWNLOADS_PATH}:/downloads
+      - ${HOST_PATH}/qbittorrent:/config
+    ports:
+      - 6881:6881
+    #  - 8080:8080
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.torrent.entrypoints=https'
+      - 'traefik.http.services.torrent.loadbalancer.server.port=8080'
+      - 'traefik.http.routers.torrent.middlewares=authentik@docker'
+
+  flaresolverr: # For Jackett, set to "http://flaresolverr:8191"
+    image: flaresolverr/flaresolverr:v3.2.1
+    restart: unless-stopped
+    networks:
+      - global_net
+    #ports:
+    #  - 8191:8191
+
+  prowlarr:
+    image: linuxserver/prowlarr:1.5.2
+    restart: unless-stopped
+    networks:
+      - global_net
+    volumes:
+      - ${HOST_PATH}/prowlarr:/config
+    #ports:
+    #  - 9696:9696
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.prowlarr.entrypoints=https'
+      - 'traefik.http.services.prowlarr.loadbalancer.server.port=9696'
+      - 'traefik.http.routers.prowlarr.middlewares=authentik@docker'
+
+  sonarr:
+    image: linuxserver/sonarr:3.0.10
+    restart: unless-stopped
+    networks:
+      - global_net
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${HOST_PATH}/sonarr:/config
+      - ${MEDIA_PATH}:/media
+      - ${DOWNLOADS_PATH}:/downloads
+    #ports:
+    #  - 8989:8989
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.sonarr.entrypoints=https'
+      - 'traefik.http.services.sonarr.loadbalancer.server.port=8989'
+      - 'traefik.http.routers.sonarr.middlewares=authentik@docker'
+
+  radarr:
+    image: linuxserver/radarr:4.5.2
+    restart: unless-stopped
+    networks:
+      - global_net
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${HOST_PATH}/radarr:/config
+      - ${MEDIA_PATH}:/media
+      - ${DOWNLOADS_PATH}:/downloads
+    #ports:
+    #  - 7878:7878
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.radarr.entrypoints=https'
+      - 'traefik.http.services.radarr.loadbalancer.server.port=7878'
+      - 'traefik.http.routers.radarr.middlewares=authentik@docker'
+
+  overseerr:
+    image: linuxserver/overseerr:1.33.0
+    networks:
+      - global_net
+    environment:
+      - TZ=Europe/Paris
+    #ports:
+    #  - 5055:5055
+    volumes:
+      - ${HOST_PATH}/overseerr:/config
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.services.overseerr.loadbalancer.server.port=5055'
+      - 'traefik.http.routers.overseerr.entrypoints=https'
+
+  tautulli:
+    image: linuxserver/tautulli:2.12.4
+    restart: unless-stopped
+    networks:
+      - global_net
+    volumes:
+      - ${HOST_PATH}/tautulli:/config
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.services.tautulli.loadbalancer.server.port=8181'
+      - 'traefik.http.routers.tautulli.entrypoints=https'
+    #ports:
+    #  - 8181:8181
+
+networks:
+  global_net:
+    external: true

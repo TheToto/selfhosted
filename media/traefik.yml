@@ -1,0 +1,115 @@
+version: "3.4"
+
+services:
+  dockerproxy:
+    image: tecnativa/docker-socket-proxy:latest
+    restart: unless-stopped
+    networks:
+      - socket_docker
+    environment:
+      - CONTAINERS=1
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  traefik:
+    image: traefik:2.10.1
+    restart: unless-stopped
+    volumes:
+      - traefik-acme:/acme
+      - traefik-data:/data
+    networks:
+      - global_net
+      - socket_docker
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 0
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.api.entrypoints=https'
+      - 'traefik.http.routers.api.service=api@internal'
+      - 'traefik.http.routers.api.middlewares=authentik@docker'
+    environment:
+      - CF_API_EMAIL=${CF_API_EMAIL}
+      - CF_API_KEY=${CF_API_KEY}
+    extra_hosts:
+      - host.docker.internal:127.0.0.1 # For net=host containers (public ip, put in env)
+    ports:
+      - 80:80
+      - 443:443
+    command:
+      - '--api'
+
+      - '--providers.docker=true'
+      - '--providers.docker.exposedByDefault=false'
+      - '--providers.docker.network=global_net'
+      - '--providers.docker.endpoint=tcp://dockerproxy:2375'
+      - '--providers.docker.defaultRule=Host(`{{ index .Labels "com.docker.compose.service"}}.media.${APP_DOMAIN}`) || Host(`{{ index .Labels "com.docker.compose.service"}}.${APP_DOMAIN}`)'
+
+        # Accept connections on :80 but redirect to :443
+      - '--entrypoints.http=true'
+      - '--entrypoints.http.address=:80'
+      - '--entrypoints.http.http.redirections.entrypoint.to=https'
+      - '--entrypoints.http.http.redirections.entrypoint.scheme=https'
+
+        # Accept connections on :443
+      - '--entrypoints.https=true'
+      - '--entrypoints.https.address=:443'
+      - '--entrypoints.https.http.tls=true'
+      - '--entrypoints.https.http.tls.certResolver=letsencrypt'
+      - '--entrypoints.https.http.tls.domains[0].main=${APP_DOMAIN}'
+      - '--entrypoints.https.http.tls.domains[0].sans=*.${APP_DOMAIN}'
+      - '--entrypoints.https.http.tls.domains[1].main=media.${APP_DOMAIN}'
+      - '--entrypoints.https.http.tls.domains[1].sans=*.media.${APP_DOMAIN}'
+
+      - '--certificatesResolvers.letsencrypt.acme.storage=/acme/acme.json'
+      - '--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare'
+      # Staging
+      #- '--certificatesResolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
+      - '--certificatesResolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory'
+
+      - '--log=true'
+      - '--log.level=DEBUG'
+      #- '--log.filepath=/var/log/traefik.log'
+
+      - '--accesslog.filepath=/data/access.log'
+      #- '--metrics.prometheus=true'
+
+  authentik-proxy:
+    image: ghcr.io/goauthentik/proxy:2023.5.3
+    networks:
+      - global_net
+    #ports:
+    #  - 9000:9000
+    #  - 9443:9443
+    environment:
+      AUTHENTIK_HOST: https://auth.${APP_DOMAIN}
+      AUTHENTIK_INSECURE: "false"
+      AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN}
+    labels:
+      traefik.enable: true
+      traefik.http.routers.authentik.entrypoints: https
+      traefik.http.services.authentik.loadbalancer.server.port: 9000
+      traefik.http.routers.authentik.rule: HostRegexp(`{subdomain:[a-z0-9-]+}.${APP_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`) || HostRegexp(`{subdomain:[a-z0-9-]+}.media.${APP_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)
+
+      traefik.http.middlewares.authentik.forwardauth.address: http://authentik-proxy:9000/outpost.goauthentik.io/auth/traefik
+      traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
+      traefik.http.middlewares.authentik.forwardauth.authResponseHeaders: X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version
+    restart: unless-stopped
+
+  whoami:
+    image: containous/whoami:latest
+    networks:
+      - global_net
+    labels:
+      traefik.enable: true
+      traefik.http.routers.whoami.entrypoints: https
+      traefik.http.routers.whoami.middlewares: authentik@docker
+    restart: unless-stopped
+
+volumes:
+  traefik-acme:
+  traefik-data:
+
+networks:
+  global_net:
+    name: global_net
+  socket_docker:

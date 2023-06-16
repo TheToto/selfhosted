@@ -1,0 +1,23 @@
+version: "2"
+
+services:
+  public:
+    image: halverneus/static-file-server:v1.8.9
+    #ports:
+    #  - 8080:8080
+    networks:
+      - global_net
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.public.entrypoints=https'
+      - 'traefik.http.services.public.loadbalancer.server.port=8080'
+    environment:
+      - CORS=true
+      - SHOW_LISTING=true
+    volumes:
+      - ${HOST_PATH}:/web
+    restart: unless-stopped
+
+networks:
+  global_net:
+    external: true
