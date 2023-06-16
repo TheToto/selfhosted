@@ -19,6 +19,11 @@
       "matchManagers": ["docker-compose"],
       "matchPackageNames": ["lscr.io/linuxserver/qbittorrent"],
       "allowedVersions": "<10" // Actual version is 3.x.x. There is 14.x.x, 20.x.x tags...
+    },
+    {
+      "matchManagers": ["docker-compose"],
+      "matchPackageNames": ["lscr.io/linuxserver/prowlarr"],
+      "allowedVersions": "!/^1.8.1259$/" // There is an error tag 1.8.1259
     }
   ]
 }
