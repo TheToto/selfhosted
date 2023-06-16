@@ -2,7 +2,7 @@ version: '3'
 
 services:
   torrent:
-    image: linuxserver/qbittorrent:4.5.3
+    image: linuxserver/qbittorrent:20.04.1
     restart: unless-stopped
     networks:
       - global_net
