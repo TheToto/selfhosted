@@ -78,7 +78,7 @@ services:
       - 'traefik.http.routers.radarr.middlewares=authentik@docker'
 
   overseerr:
-    image: lscr.io/linuxserver/overseerr:1.33.0
+    image: lscr.io/linuxserver/overseerr:2021.12.12
     networks:
       - global_net
     environment:
