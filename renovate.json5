@@ -23,7 +23,7 @@
     {
       "matchManagers": ["docker-compose"],
       "matchPackageNames": ["lscr.io/linuxserver/prowlarr"],
-      "allowedVersions": "!/^1.8.1259$/" // There is an error tag 1.8.1259
+      "allowedVersions": "!/^v1.8.1259$/" // There is an error tag 1.8.1259
     }
   ]
 }
