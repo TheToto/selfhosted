@@ -27,7 +27,7 @@ services:
     #  - 8191:8191
 
   prowlarr:
-    image: linuxserver/prowlarr:1.5.2
+    image: linuxserver/prowlarr:1.8.1259
     restart: unless-stopped
     networks:
       - global_net
