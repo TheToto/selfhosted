@@ -14,7 +14,7 @@
       "matchManagers": ["docker-compose"],
       "matchPackageNames": ["lscr.io/linuxserver/calibre-web"],
       "allowedVersions": "<2" // Actual versions are 0.x. There is 2021.x.x and v2, v3, v4 tags... 
-    }
+    },
     {
       "matchManagers": ["docker-compose"],
       "matchPackageNames": ["lscr.io/linuxserver/qbittorrent"],
