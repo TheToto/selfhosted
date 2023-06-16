@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "docker-compose": {
+    "fileMatch": ["^.*\\.ya?ml$"]
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["docker-compose"],
+      "matchPackageNames": ["lscr.io/linuxserver/overseerr", "lscr.io/linuxserver/tautulli"],
+      "allowedVersions": "<2000" // There is 2021.x.x tags
+    },
+    {
+      "matchManagers": ["docker-compose"],
+      "matchPackageNames": ["lscr.io/linuxserver/calibre-web"],
+      "allowedVersions": "<2" // Actual versions are 0.x. There is 2021.x.x and v2, v3, v4 tags... 
+    }
+    {
+      "matchManagers": ["docker-compose"],
+      "matchPackageNames": ["lscr.io/linuxserver/qbittorrent"],
+      "allowedVersions": "<10" // Actual version is 3.x.x. There is 14.x.x, 20.x.x tags...
+    }
+  ]
+}
