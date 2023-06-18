@@ -8,6 +8,9 @@ services:
       - global_net
     environment:
       - PLEX_CLAIM=claim-XXX
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
     volumes:
       - ${HOST_PATH}/plex:/config # plex database
       - ${MEDIA_PATH}:/media # media files
