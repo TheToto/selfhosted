@@ -62,8 +62,6 @@ services:
       - '--entrypoints.https.http.tls.certResolver=letsencrypt'
       - '--entrypoints.https.http.tls.domains[0].main=${APP_DOMAIN}'
       - '--entrypoints.https.http.tls.domains[0].sans=*.${APP_DOMAIN}'
-      - '--entrypoints.https.http.tls.domains[1].main=code.${APP_DOMAIN}'
-      - '--entrypoints.https.http.tls.domains[1].sans=*.code.${APP_DOMAIN}'
       #- '--entrypoints.https.http.middlewares=error-pages@docker'
 
       - '--certificatesResolvers.letsencrypt.acme.storage=acme.json'
