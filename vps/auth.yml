@@ -48,7 +48,7 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.auth.entrypoints=https'
-      - 'traefik.http.routers.authentik.rule=Host(`{{ index .Labels "com.docker.compose.service"}}.thetoto.fr`) || HostRegexp(`{subdomain:[a-z0-9-]+}.${APP_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)'
+      - 'traefik.http.routers.auth.rule=Host(`{{ index .Labels "com.docker.compose.service"}}.thetoto.fr`) || HostRegexp(`{subdomain:[a-z0-9-]+}.${APP_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)'
       - 'traefik.http.services.auth.loadbalancer.server.port=9000'
 
       - 'traefik.http.middlewares.authentik.forwardauth.address=http://auth:9000/outpost.goauthentik.io/auth/traefik'
