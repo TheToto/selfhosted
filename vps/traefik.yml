@@ -29,7 +29,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.api.entrypoints=https'
       - 'traefik.http.routers.api.service=api@internal'
-      - 'traefik.http.routers.api.middlewares=authentik@docker'
+      #- 'traefik.http.routers.api.middlewares=authentik@docker'
 
       - 'com.centurylinklabs.watchtower.monitor-only=true'
     environment:

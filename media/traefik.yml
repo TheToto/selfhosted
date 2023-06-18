@@ -26,7 +26,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.api.entrypoints=https'
       - 'traefik.http.routers.api.service=api@internal'
-      - 'traefik.http.routers.api.middlewares=authentik@docker'
+      #- 'traefik.http.routers.api.middlewares=authentik@docker'
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_API_KEY=${CF_API_KEY}
