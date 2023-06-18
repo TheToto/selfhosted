@@ -111,5 +111,5 @@ volumes:
 
 networks:
   global_net:
-    name: global_net
+    external: true
   socket_docker:
