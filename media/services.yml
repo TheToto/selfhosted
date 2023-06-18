@@ -6,6 +6,10 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
     volumes:
       - ${DOWNLOADS_PATH}:/downloads
       - ${HOST_PATH}/qbittorrent:/config
@@ -31,6 +35,10 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
     volumes:
       - ${HOST_PATH}/prowlarr:/config
     #ports:
@@ -46,6 +54,10 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${HOST_PATH}/sonarr:/config
@@ -64,6 +76,10 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${HOST_PATH}/radarr:/config
@@ -82,7 +98,9 @@ services:
     networks:
       - global_net
     environment:
-      - TZ=Europe/Paris
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
     #ports:
     #  - 5055:5055
     volumes:
@@ -98,6 +116,10 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
     volumes:
       - ${HOST_PATH}/tautulli:/config
     labels:
