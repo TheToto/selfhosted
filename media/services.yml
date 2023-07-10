@@ -31,7 +31,7 @@ services:
     #  - 8191:8191
 
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:1.7.1.3684
+    image: lscr.io/linuxserver/prowlarr:nightly-version-1.7.2.3693
     restart: unless-stopped
     networks:
       - global_net
