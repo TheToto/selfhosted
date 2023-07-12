@@ -72,7 +72,7 @@ services:
       - 'traefik.http.routers.sonarr.middlewares=authentik@docker'
 
   radarr:
-    image: lscr.io/linuxserver/radarr:4.5.2
+    image: lscr.io/linuxserver/radarr:4.6.4
     restart: unless-stopped
     networks:
       - global_net
