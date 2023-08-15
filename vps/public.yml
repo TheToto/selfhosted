@@ -2,7 +2,7 @@ version: "2"
 
 services:
   public:
-    image: halverneus/static-file-server:v1.8.9
+    image: halverneus/static-file-server:v1.8.10
     #ports:
     #  - 8080:8080
     networks:
