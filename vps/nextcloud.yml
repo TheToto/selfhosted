@@ -3,7 +3,7 @@ version: "3"
 services:
   cloud:
     restart: unless-stopped
-    image: lscr.io/linuxserver/nextcloud:27.1.1
+    image: lscr.io/linuxserver/nextcloud:27.1.2
     networks:
       - global_net
     environment:
