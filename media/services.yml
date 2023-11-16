@@ -93,6 +93,50 @@ services:
       - 'traefik.http.services.radarr.loadbalancer.server.port=7878'
       - 'traefik.http.routers.radarr.middlewares=authentik@docker'
 
+  sonarr4k:
+    image: lscr.io/linuxserver/sonarr:3.0.10
+    restart: unless-stopped
+    networks:
+      - global_net
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${HOST_PATH}/sonarr4k:/config
+      - ${MEDIA_PATH}:/media
+      - ${DOWNLOADS_PATH}:/downloads
+    #ports:
+    #  - 8989:8989
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.sonarr4k.entrypoints=https'
+      - 'traefik.http.services.sonarr4k.loadbalancer.server.port=8989'
+      - 'traefik.http.routers.sonarr4k.middlewares=authentik@docker'
+
+  radarr4k:
+    image: lscr.io/linuxserver/radarr:4.7.5
+    restart: unless-stopped
+    networks:
+      - global_net
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${HOST_PATH}/radarr4k:/config
+      - ${MEDIA_PATH}:/media
+      - ${DOWNLOADS_PATH}:/downloads
+    #ports:
+    #  - 7878:7878
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.radarr4k.entrypoints=https'
+      - 'traefik.http.services.radarr4k.loadbalancer.server.port=7878'
+      - 'traefik.http.routers.radarr4k.middlewares=authentik@docker'
+
   overseerr:
     image: lscr.io/linuxserver/overseerr:1.33.2
     networks:
