@@ -31,7 +31,7 @@ services:
     #  - 8191:8191
 
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:nightly-version-1.8.2.3838
+    image: lscr.io/linuxserver/prowlarr:1.9.4
     restart: unless-stopped
     networks:
       - global_net
@@ -72,7 +72,7 @@ services:
       - 'traefik.http.routers.sonarr.middlewares=authentik@docker'
 
   radarr:
-    image: lscr.io/linuxserver/radarr:4.7.5
+    image: lscr.io/linuxserver/radarr:5.1.3
     restart: unless-stopped
     networks:
       - global_net
@@ -116,7 +116,7 @@ services:
       - 'traefik.http.routers.sonarr4k.middlewares=authentik@docker'
 
   radarr4k:
-    image: lscr.io/linuxserver/radarr:4.7.5
+    image: lscr.io/linuxserver/radarr:5.1.3
     restart: unless-stopped
     networks:
       - global_net
