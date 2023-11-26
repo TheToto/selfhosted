@@ -74,7 +74,7 @@ services:
       #- '--metrics.prometheus=true'
 
   authentik-proxy:
-    image: ghcr.io/goauthentik/proxy:2023.10.3
+    image: ghcr.io/goauthentik/proxy:2023.10.4
     networks:
       - global_net
     #ports:
