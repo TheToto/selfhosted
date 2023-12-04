@@ -156,7 +156,7 @@ services:
       - 'traefik.http.routers.overseerr.entrypoints=https'
 
   tautulli:
-    image: lscr.io/linuxserver/tautulli:2.13.2
+    image: lscr.io/linuxserver/tautulli:2.13.3
     restart: unless-stopped
     networks:
       - global_net
