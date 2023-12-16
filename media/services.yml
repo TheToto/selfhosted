@@ -27,6 +27,8 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+    dns:
+      - 1.1.1.1
     #ports:
     #  - 8191:8191
 
