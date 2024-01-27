@@ -158,6 +158,24 @@ services:
       - 'traefik.http.services.overseerr.loadbalancer.server.port=5055'
       - 'traefik.http.routers.overseerr.entrypoints=https'
 
+  requestrr:
+    image: lscr.io/linuxserver/requestrr:2.1.2
+    networks:
+      - global_net
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    #ports:
+    #  - 4545:4545
+    volumes:
+      - ${HOST_PATH}/requestrr:/config
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.services.requestrr.loadbalancer.server.port=4545'
+      - 'traefik.http.routers.requestrr.entrypoints=https'
+
   tautulli:
     image: lscr.io/linuxserver/tautulli:2.13.4
     restart: unless-stopped
