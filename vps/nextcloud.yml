@@ -11,6 +11,8 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
       - DOCKER_MODS=linuxserver/mods:nextcloud-mediadc|linuxserver/mods:nextcloud-memories
+      - TRUSTED_PROXIES=172.20.0.0/16 # global_net IPAM subnet
+      - NEXTCLOUD_TRUSTED_DOMAINS=cloud.thetoto.fr
     volumes:
       - ${HOST_PATH}/config:/config
       - ${HOST_PATH}/data:/data
@@ -32,7 +34,7 @@ services:
       - "traefik.http.middlewares.nextcloud-wellknown.replacepathregex.replacement=/index.php$${1}"
 
       - "traefik.http.middlewares.https-headers-nextcloud.headers.framedeny=false"
-      - "traefik.http.middlewares.https-headers-nextcloud.headers.STSSeconds=31536000"
+      - "traefik.http.middlewares.https-headers-nextcloud.headers.STSSeconds=155520011"
       - "traefik.http.middlewares.https-headers-nextcloud.headers.STSIncludeSubdomains=true"
       - "traefik.http.middlewares.https-headers-nextcloud.headers.STSPreload=true"
       - "traefik.http.middlewares.https-headers-nextcloud.headers.forceSTSHeader=true"
@@ -40,6 +42,8 @@ services:
       - "traefik.http.middlewares.https-headers-nextcloud.headers.contentTypeNosniff=true"
       - "traefik.http.middlewares.https-headers-nextcloud.headers.customFrameOptionsValue=SAMEORIGIN"
       - "traefik.http.middlewares.https-headers-nextcloud.headers.customResponseHeaders.X-Robots-Tag=noindex, nofollow"
+      - "traefik.http.middlewares.https-headers-nextcloud.headers.contentSecurityPolicy=frame-ancestors 'self' thetoto.fr *.thetoto.fr"
+
 
 
 
