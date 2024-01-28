@@ -10,6 +10,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Paris
+      - DOCKER_MODS=linuxserver/mods:nextcloud-mediadc|linuxserver/mods:nextcloud-memories
     volumes:
       - ${HOST_PATH}/config:/config
       - ${HOST_PATH}/data:/data
@@ -21,20 +22,26 @@ services:
       - 'traefik.enable=true'
       - "traefik.http.routers.nextcloud.entrypoints=https"
       - 'traefik.http.services.nextcloud.loadbalancer.server.port=80'
-      - "traefik.http.routers.nextcloud.middlewares=https-headers, nextcloud-caldav"
+      - "traefik.http.routers.nextcloud.middlewares=https-headers-nextcloud, nextcloud-caldav, nextcloud-wellknown"
 
       - "traefik.http.middlewares.nextcloud-caldav.redirectregex.permanent=true"
-      - "traefik.http.middlewares.nextcloud-caldav.redirectregex.regex=^https://(.*)/.well-known/(card|cal)dav"
+      - "traefik.http.middlewares.nextcloud-caldav.redirectregex.regex=^https://(.*)/.well-known/(?:card|cal)dav"
       - "traefik.http.middlewares.nextcloud-caldav.redirectregex.replacement=https://$${1}/remote.php/dav/"
 
-      - "traefik.http.middlewares.https-headers.headers.framedeny=true"
-      - "traefik.http.middlewares.https-headers.headers.STSSeconds=31536000"
-      - "traefik.http.middlewares.https-headers.headers.STSIncludeSubdomains=true"
-      - "traefik.http.middlewares.https-headers.headers.STSPreload=true"
-      - "traefik.http.middlewares.https-headers.headers.forceSTSHeader=true"
-      - "traefik.http.middlewares.https-headers.headers.SSLRedirect=true"
-      - "traefik.http.middlewares.https-headers.headers.contentTypeNosniff=true"
-      - "traefik.http.middlewares.https-headers.headers.customFrameOptionsValue=SAMEORIGIN"
+      - "traefik.http.middlewares.nextcloud-wellknown.replacepathregex.regex=^(/.well-known.*)"
+      - "traefik.http.middlewares.nextcloud-wellknown.replacepathregex.replacement=/index.php$${1}"
+
+      - "traefik.http.middlewares.https-headers-nextcloud.headers.framedeny=false"
+      - "traefik.http.middlewares.https-headers-nextcloud.headers.STSSeconds=31536000"
+      - "traefik.http.middlewares.https-headers-nextcloud.headers.STSIncludeSubdomains=true"
+      - "traefik.http.middlewares.https-headers-nextcloud.headers.STSPreload=true"
+      - "traefik.http.middlewares.https-headers-nextcloud.headers.forceSTSHeader=true"
+      - "traefik.http.middlewares.https-headers-nextcloud.headers.SSLRedirect=true"
+      - "traefik.http.middlewares.https-headers-nextcloud.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.https-headers-nextcloud.headers.customFrameOptionsValue=SAMEORIGIN"
+      - "traefik.http.middlewares.https-headers-nextcloud.headers.customResponseHeaders.X-Robots-Tag=noindex, nofollow"
+
+
 
 networks:
   global_net:
