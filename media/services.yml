@@ -159,7 +159,7 @@ services:
       - 'traefik.http.routers.overseerr.entrypoints=https'
 
   requestrr:
-    image: thomst08/requestrr:2.1.4
+    image: thomst08/requestrr:v2.1.4-hf3
     networks:
       - global_net
     environment:
