@@ -159,7 +159,7 @@ services:
       - 'traefik.http.routers.overseerr.entrypoints=https'
 
   requestrr:
-    image: lscr.io/linuxserver/requestrr:2.1.2
+    image: thomst08/requestrr:2.1.4
     networks:
       - global_net
     environment:
@@ -169,7 +169,7 @@ services:
     #ports:
     #  - 4545:4545
     volumes:
-      - ${HOST_PATH}/requestrr:/config
+      - ${HOST_PATH}/requestrr:/root/config
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
