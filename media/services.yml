@@ -175,6 +175,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.services.requestrr.loadbalancer.server.port=4545'
       - 'traefik.http.routers.requestrr.entrypoints=https'
+      - 'traefik.http.routers.requestrr.middlewares=authentik@docker'
 
   tautulli:
     image: lscr.io/linuxserver/tautulli:2.13.4

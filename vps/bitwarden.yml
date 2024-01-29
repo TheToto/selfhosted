@@ -11,6 +11,12 @@ services:
     environment:
       WEBSOCKET_ENABLED: 'true' # Required to use websockets
       SIGNUPS_ALLOWED: 'false' # set to false to disable signups
+      SMTP_HOST: mail.thetoto.fr
+      SMTP_PORT: 465
+      SMTP_SECURITY: force_tls
+      SMTP_FROM: noreply+vaultwarden@thetoto.fr
+      SMTP_USERNAME: noreply
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
     #ports:
     #  - 80:80
     #  - 3012:3012
