@@ -11,6 +11,7 @@ services:
     environment:
       WEBSOCKET_ENABLED: 'true' # Required to use websockets
       SIGNUPS_ALLOWED: 'false' # set to false to disable signups
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
       SMTP_HOST: mail.thetoto.fr
       SMTP_PORT: 465
       SMTP_SECURITY: force_tls
