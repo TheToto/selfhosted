@@ -1,7 +1,9 @@
+# DEPRECATED, see cloud folder
+
 version: "3"
 
 services:
-  cloud:
+  cloud2:
     restart: unless-stopped
     image: lscr.io/linuxserver/nextcloud:28.0.1
     networks:
@@ -12,7 +14,7 @@ services:
       - TZ=Europe/Paris
       - DOCKER_MODS=linuxserver/mods:nextcloud-mediadc|linuxserver/mods:nextcloud-memories
       - TRUSTED_PROXIES=172.20.0.0/16 # global_net IPAM subnet
-      - NEXTCLOUD_TRUSTED_DOMAINS=cloud.thetoto.fr
+      - NEXTCLOUD_TRUSTED_DOMAINS=cloud2.thetoto.fr
     volumes:
       - ${HOST_PATH}/config:/config
       - ${HOST_PATH}/data:/data
