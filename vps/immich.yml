@@ -3,7 +3,7 @@ version: "3.8"
 name: immich
 
 services:
-  immich-server:
+  immich:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:v1.94.1
     networks:
