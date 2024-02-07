@@ -23,8 +23,8 @@ services:
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.calibre.entrypoints=https'
-      - 'traefik.http.services.calibre.loadbalancer.server.port=2283'
+      - 'traefik.http.routers.immich.entrypoints=https'
+      - 'traefik.http.services.immich.loadbalancer.server.port=2283'
 
   immich-microservices:
     container_name: immich_microservices
