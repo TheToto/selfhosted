@@ -41,6 +41,32 @@ services:
       #- 32410-32414:32410-32414/udp # GDM
       #- 32469:32469 # DLNA
 
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    restart: unless-stopped
+    networks:
+      - global_net
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+      - JELLYFIN_PublishedServerUrl=jellyfin.thetoto.fr #optional
+    volumes:
+      - ${HOST_PATH}/jellyfin:/config
+      - ${MEDIA_PATH}:/data/media # media files
+    devices:
+      - /dev/dri:/dev/dri
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.jellyfin.entrypoints=https'
+      - 'traefik.http.services.jellyfin.loadbalancer.server.port=8096'
+    #network_mode: host # DLNA not working with ports
+    #ports:
+    #  - 8096:8096
+    #  - 8920:8920 #optional
+    #  - 7359:7359/udp #optional
+    #  - 1900:1900/udp #optional
+
 networks:
   global_net:
     external: true
