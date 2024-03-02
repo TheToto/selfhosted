@@ -5,7 +5,7 @@ name: immich
 services:
   immich:
     container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:v1.94.1
+    image: ghcr.io/immich-app/immich-server:v1.97.0
     networks:
       - immich
       - global_net
@@ -28,7 +28,7 @@ services:
 
   immich-microservices:
     container_name: immich_microservices
-    image: ghcr.io/immich-app/immich-server:v1.94.1
+    image: ghcr.io/immich-app/immich-server:v1.97.0
     networks:
       - immich
     # extends: # uncomment this section for hardware acceleration - see https://immich.app/docs/features/hardware-transcoding
