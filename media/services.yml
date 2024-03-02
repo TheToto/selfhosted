@@ -34,7 +34,7 @@ services:
     #  - 8191:8191
 
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:1.12.2
+    image: lscr.io/linuxserver/prowlarr:1.13.3 # Renovate fail to update prowlarr :/
     restart: unless-stopped
     networks:
       - global_net
