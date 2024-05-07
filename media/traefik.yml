@@ -53,6 +53,7 @@ services:
         # Accept connections on :443
       - '--entrypoints.https=true'
       - '--entrypoints.https.address=:443'
+      - '--entrypoints.https.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12'
       - '--entrypoints.https.http.tls=true'
       - '--entrypoints.https.http.tls.certResolver=letsencrypt'
       - '--entrypoints.https.http.tls.domains[0].main=${APP_DOMAIN}'
@@ -67,7 +68,7 @@ services:
       - '--certificatesResolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory'
 
       - '--log=true'
-      - '--log.level=DEBUG'
+      - '--log.level=${TRAEFIK_LOG_LEVEL:-INFO}'
       #- '--log.filepath=/var/log/traefik.log'
 
       - '--accesslog.filepath=/data/access.log'
