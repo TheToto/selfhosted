@@ -1,0 +1,44 @@
+services:
+  mealie:
+    image: ghcr.io/mealie-recipes/mealie:v1.5.1
+    restart: unless-stopped
+    networks:
+      - global_net
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.mealie.entrypoints=https'
+      - 'traefik.http.services.mealie.loadbalancer.server.port=9000'
+    #ports:
+    #    - "9000:9000"
+    deploy:
+      resources:
+        limits:
+          memory: 600M
+    volumes:
+      - mealie-data:/app/data/
+    environment:
+      ALLOW_SIGNUP: False
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Paris
+      MAX_WORKERS: 1
+      WEB_CONCURRENCY: 1
+      BASE_URL: https://mealie.thetoto.fr
+      OIDC_AUTH_ENABLED: True
+      OIDC_SIGNUP_ENABLED: True
+      OIDC_CONFIGURATION_URL: "https://auth.thetoto.fr/application/o/mealie/.well-known/openid-configuration"
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      OIDC_ADMIN_GROUP: admin
+      OIDC_PROVIDER_NAME: "TheToto Auth"
+      OIDC_REMEMBER_ME: True
+      SMTP_HOST: mail.thetoto.fr
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      
+networks:
+  global_net:
+    external: true
+
+volumes:
+  mealie-data:
