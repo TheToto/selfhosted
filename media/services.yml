@@ -178,7 +178,7 @@ services:
       - 'traefik.http.routers.requestrr.middlewares=authentik@docker'
 
   tautulli:
-    image: lscr.io/linuxserver/tautulli:2.13.4
+    image: lscr.io/linuxserver/tautulli:2.14.2
     restart: unless-stopped
     networks:
       - global_net
