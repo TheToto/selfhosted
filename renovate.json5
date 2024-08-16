@@ -1,10 +1,20 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base"],
+  "timezone": "Europe/Paris",
   "docker-compose": {
     "fileMatch": ["^.*\\.ya?ml$"]
   },
+  "assignees": ["TheToto"],
+  "automerge": true,
+  "automergeSchedule": [
+    "after 3:00am and before 6:00am"
+  ],
   "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    },
     {
       "matchManagers": ["docker-compose"],
       "matchPackageNames": ["lscr.io/linuxserver/overseerr", "lscr.io/linuxserver/tautulli"],
