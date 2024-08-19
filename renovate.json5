@@ -7,6 +7,7 @@
   },
   "assignees": ["TheToto"],
   "automerge": true,
+  "ignoreTests": true,
   "automergeSchedule": [
     "after 3:00am and before 6:00am"
   ],
