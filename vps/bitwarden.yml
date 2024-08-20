@@ -2,7 +2,7 @@ version: '3'
 
 services:
   pass:
-    image: vaultwarden/server:1.31.0
+    image: vaultwarden/server:1.32.0
     restart: unless-stopped
     networks:
       - global_net
