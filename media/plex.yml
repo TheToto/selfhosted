@@ -6,8 +6,9 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+      - plex
     environment:
-      - PLEX_CLAIM=claim-XXX
+      - PLEX_CLAIM=${PLEX_CLAIM}
       - PUID=${UID}
       - PGID=${GID}
       - TZ=${TZ}
@@ -40,6 +41,19 @@ services:
       #- 5353:5353/udp
       #- 32410-32414:32410-32414/udp # GDM
       #- 32469:32469 # DLNA
+      
+  plexautolanguages:
+    image: remirigal/plex-auto-languages:v1.2.3
+    restart: unless-stopped
+    networks:
+      - global_net
+      - plex
+    environment:
+      - PLEX_URL=http://plex:32400
+      - PLEX_TOKEN=${PLEX_TOKEN}
+      - TZ=${TZ}
+    volumes:
+      - ${HOST_PATH}/plexautolanguages:/config
 
   #jellyfin:
   #  image: lscr.io/linuxserver/jellyfin:latest
@@ -68,5 +82,6 @@ services:
     #  - 1900:1900/udp #optional
 
 networks:
+  plex:
   global_net:
     external: true
