@@ -5,7 +5,7 @@ name: immich
 services:
   immich:
     container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:v1.112.1
+    image: ghcr.io/immich-app/immich-server:v1.113.0
     networks:
       - immich
       - global_net
