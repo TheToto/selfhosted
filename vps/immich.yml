@@ -12,8 +12,14 @@ services:
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
-    env_file:
-      - stack.env
+    environment:
+      TZ: Europe/Paris
+      UPLOAD_LOCATION: ${UPLOAD_LOCATION}
+      DB_HOSTNAME: ${DB_HOSTNAME}
+      DB_DATABASE_NAME: ${DB_DATABASE_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOSTNAME: ${REDIS_HOSTNAME}
     #ports:
     #  - 2283:3001
     depends_on:
@@ -37,8 +43,6 @@ services:
     #   service: cpu # set to one of [armnn, cuda, openvino, openvino-wsl] for accelerated inference - use the `-wsl` version for WSL2 where applicable
     volumes:
       - model-cache:/cache
-    env_file:
-      - stack.env
     restart: unless-stopped
 
   redis:
@@ -53,8 +57,6 @@ services:
     image: tensorchord/pgvecto-rs:pg14-v0.2.0
     networks:
       - immich
-    env_file:
-      - stack.env
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_USER: ${DB_USERNAME}
