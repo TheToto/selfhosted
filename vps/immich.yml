@@ -13,7 +13,7 @@ services:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
     env_file:
-      - ./stack.env
+      - ../stack.env
     #ports:
     #  - 2283:3001
     depends_on:
@@ -38,7 +38,7 @@ services:
     volumes:
       - model-cache:/cache
     env_file:
-      - ./stack.env
+      - ../stack.env
     restart: unless-stopped
 
   redis:
@@ -54,7 +54,7 @@ services:
     networks:
       - immich
     env_file:
-      - ./stack.env
+      - ../stack.env
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_USER: ${DB_USERNAME}
