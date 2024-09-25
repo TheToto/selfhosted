@@ -41,19 +41,6 @@ services:
       #- 5353:5353/udp
       #- 32410-32414:32410-32414/udp # GDM
       #- 32469:32469 # DLNA
-      
-  plexautolanguages:
-    image: remirigal/plex-auto-languages:v1.2.3
-    restart: unless-stopped
-    networks:
-      - global_net
-      - plex
-    environment:
-      - PLEX_URL=http://plex:32400
-      - PLEX_TOKEN=${PLEX_TOKEN}
-      - TZ=${TZ}
-    volumes:
-      - ${HOST_PATH}/plexautolanguages:/config
 
   #jellyfin:
   #  image: lscr.io/linuxserver/jellyfin:latest
