@@ -6,7 +6,7 @@
     "fileMatch": ["^.*\\.ya?ml$"]
   },
   "assignees": ["TheToto"],
-  "automerge": true,
+  "automerge": false,
   "ignoreTests": true,
   "automergeSchedule": [
     "after 3:00am and before 6:00am"
