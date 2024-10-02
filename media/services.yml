@@ -141,7 +141,7 @@ services:
       - 'traefik.http.routers.radarr4k.middlewares=authentik@docker'
 
   bazarr:
-    image: lscr.io/linuxserver/bazarr:1.4.4
+    image: lscr.io/linuxserver/bazarr:1.4.5
     restart: unless-stopped
     networks:
       - global_net
