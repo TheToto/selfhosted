@@ -10,6 +10,7 @@ services:
       - PUID=${UID}
       - PGID=${GID}
       - TZ=${TZ}
+      - DOCKER_MODS=ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest
     volumes:
       - ${DOWNLOADS_PATH}:/downloads
       - ${HOST_PATH}/qbittorrent:/config
