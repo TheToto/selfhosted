@@ -26,8 +26,10 @@ services:
       BASE_URL: https://mealie.thetoto.fr
       OIDC_AUTH_ENABLED: True
       OIDC_SIGNUP_ENABLED: True
-      OIDC_CONFIGURATION_URL: "https://auth.thetoto.fr/application/o/mealie/.well-known/openid-configuration"
+      OIDC_AUTO_REDIRECT: True
+      OIDC_CONFIGURATION_URL: ${OIDC_CONFIGURATION_URL}
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       OIDC_ADMIN_GROUP: admin
       OIDC_PROVIDER_NAME: "TheToto Auth"
       OIDC_REMEMBER_ME: True
