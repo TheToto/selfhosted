@@ -141,26 +141,26 @@ services:
       - 'traefik.http.services.radarr4k.loadbalancer.server.port=7878'
       - 'traefik.http.routers.radarr4k.middlewares=authentik@docker'
 
-  bazarr:
-    image: lscr.io/linuxserver/bazarr:1.4.5
-    restart: unless-stopped
-    networks:
-      - global_net
-    environment:
-      - PUID=${UID}
-      - PGID=${GID}
-      - TZ=${TZ}
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${HOST_PATH}/bazarr:/config
-      - ${MEDIA_PATH}:/media
-    #ports:
-    #  - 6767:6767
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.bazarr.entrypoints=https'
-      - 'traefik.http.services.bazarr.loadbalancer.server.port=6767'
-      - 'traefik.http.routers.bazarr.middlewares=authentik@docker'
+#  bazarr:
+#    image: lscr.io/linuxserver/bazarr:1.4.5
+#    restart: unless-stopped
+#    networks:
+#      - global_net
+#    environment:
+#      - PUID=${UID}
+#      - PGID=${GID}
+#      - TZ=${TZ}
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - ${HOST_PATH}/bazarr:/config
+#      - ${MEDIA_PATH}:/media
+#    #ports:
+#    #  - 6767:6767
+#    labels:
+#      - 'traefik.enable=true'
+#      - 'traefik.http.routers.bazarr.entrypoints=https'
+#      - 'traefik.http.services.bazarr.loadbalancer.server.port=6767'
+#      - 'traefik.http.routers.bazarr.middlewares=authentik@docker'
 
   overseerr:
     image: lscr.io/linuxserver/overseerr:1.33.2
