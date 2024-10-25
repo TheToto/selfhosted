@@ -39,6 +39,7 @@ services:
     volumes:
       - authentik-media:/media
       - authentik-templates:/templates
+      - ./authentik/custom.css:/web/dist/custom.css
     #ports:
     #  - "9000:9000"
     #  - "9443:9443"
