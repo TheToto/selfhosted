@@ -21,8 +21,9 @@ services:
       PUID: 1000
       PGID: 1000
       TZ: Europe/Paris
-      MAX_WORKERS: 1
       WEB_CONCURRENCY: 1
+      WORKERS_PER_CORE: 0.5
+      MAX_WORKERS: 1
       BASE_URL: https://mealie.thetoto.fr
       OIDC_AUTH_ENABLED: True
       OIDC_SIGNUP_ENABLED: True
