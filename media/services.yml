@@ -2,7 +2,7 @@ version: '3'
 
 services:
   torrent:
-    image: lscr.io/linuxserver/qbittorrent:5.0.1
+    image: lscr.io/linuxserver/qbittorrent:5.0.2
     restart: unless-stopped
     networks:
       - global_net
