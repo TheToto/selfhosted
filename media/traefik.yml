@@ -12,7 +12,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
 
   traefik:
-    image: traefik:v3.2.2
+    image: traefik:v3.2.3
     restart: unless-stopped
     volumes:
       - traefik-acme:/acme
