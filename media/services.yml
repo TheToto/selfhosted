@@ -7,7 +7,7 @@ services:
     networks:
       - global_net
     environment:
-      - PUID=${UID}
+      - PUID=${TORRENT_UID}
       - PGID=${GID}
       - TZ=${TZ}
       - DOCKER_MODS=ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest
