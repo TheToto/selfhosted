@@ -46,7 +46,7 @@ services:
 
   redis:
     container_name: immich_redis
-    image: redis:6.2-alpine
+    image: redis:8.0-alpine
     networks:
       - immich
     restart: unless-stopped
