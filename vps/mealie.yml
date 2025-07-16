@@ -1,6 +1,6 @@
 services:
   mealie:
-    image: ghcr.io/mealie-recipes/mealie:v2.8.0
+    image: ghcr.io/mealie-recipes/mealie:v3.0.1
     restart: unless-stopped
     networks:
       - global_net
@@ -25,6 +25,7 @@ services:
       WORKERS_PER_CORE: 0.5
       MAX_WORKERS: 1
       BASE_URL: https://mealie.thetoto.fr
+      ALLOW_PASSWORD_LOGIN: False
       OIDC_AUTH_ENABLED: True
       OIDC_SIGNUP_ENABLED: True
       OIDC_AUTO_REDIRECT: True
