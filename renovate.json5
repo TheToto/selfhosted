@@ -1,40 +1,63 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
-  "timezone": "Europe/Paris",
-  "docker-compose": {
-    "fileMatch": ["^.*\\.ya?ml$"]
-  },
-  "assignees": ["TheToto"],
-  "automerge": false,
-  "ignoreTests": true,
-  "automergeSchedule": [
-    "after 3:00am and before 6:00am"
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
   ],
-  "packageRules": [
+  timezone: 'Europe/Paris',
+  'docker-compose': {
+    managerFilePatterns: [
+      '/^.*\\.ya?ml$/',
+    ],
+  },
+  assignees: [
+    'TheToto',
+  ],
+  automerge: false,
+  ignoreTests: true,
+  automergeSchedule: [
+    'after 3:00am and before 6:00am',
+  ],
+  packageRules: [
     {
-      "matchUpdateTypes": ["patch"],
-      "automerge": true
+      matchUpdateTypes: [
+        'patch',
+      ],
+      automerge: true,
     },
     {
-      "matchUpdateTypes": ["minor"],
-      "matchCurrentVersion": "!/^0/",
-      "automerge": true
+      matchUpdateTypes: [
+        'minor',
+      ],
+      matchCurrentVersion: '!/^0/',
+      automerge: true,
     },
     {
-      "matchManagers": ["docker-compose"],
-      "matchPackageNames": ["lscr.io/linuxserver/overseerr", "lscr.io/linuxserver/tautulli"],
-      "allowedVersions": "<2000" // There is 2021.x.x tags
+      matchManagers: [
+        'docker-compose',
+      ],
+      matchPackageNames: [
+        'lscr.io/linuxserver/overseerr',
+        'lscr.io/linuxserver/tautulli',
+      ],
+      allowedVersions: '<2000',
     },
     {
-      "matchManagers": ["docker-compose"],
-      "matchPackageNames": ["lscr.io/linuxserver/calibre-web"],
-      "allowedVersions": "<2" // Actual versions are 0.x. There is 2021.x.x and v2, v3, v4 tags... 
+      matchManagers: [
+        'docker-compose',
+      ],
+      matchPackageNames: [
+        'lscr.io/linuxserver/calibre-web',
+      ],
+      allowedVersions: '<2',
     },
     {
-      "matchManagers": ["docker-compose"],
-      "matchPackageNames": ["lscr.io/linuxserver/qbittorrent"],
-      "allowedVersions": "<10" // Actual version is 3.x.x. There is 14.x.x, 20.x.x tags...
-    }
-  ]
+      matchManagers: [
+        'docker-compose',
+      ],
+      matchPackageNames: [
+        'lscr.io/linuxserver/qbittorrent',
+      ],
+      allowedVersions: '<10',
+    },
+  ],
 }
