@@ -24,7 +24,7 @@ services:
       - 'traefik.http.routers.torrent.middlewares=authentik@docker'
 
   flaresolverr: # For Jackett, set to "http://flaresolverr:8191"
-    image: flaresolverr/flaresolverr:v3.4.3
+    image: flaresolverr/flaresolverr:v3.4.4
     restart: unless-stopped
     networks:
       - global_net
