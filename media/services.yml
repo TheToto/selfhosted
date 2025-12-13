@@ -163,7 +163,7 @@ services:
 #      - 'traefik.http.routers.bazarr.middlewares=authentik@docker'
 
   overseerr:
-    image: lscr.io/linuxserver/overseerr:1.34.0
+    image: fallenbagel/jellyseerr:preview-seerr
     networks:
       - global_net
     environment:
@@ -173,7 +173,7 @@ services:
     #ports:
     #  - 5055:5055
     volumes:
-      - ${HOST_PATH}/overseerr:/config
+      - ${HOST_PATH}/overseerr:/app/config
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
@@ -201,3 +201,4 @@ services:
 networks:
   global_net:
     external: true
+
