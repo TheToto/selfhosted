@@ -47,6 +47,7 @@ services:
     environment:
       YGG_USERNAME: "${YGG_USERNAME}"
       YGG_PASSWORD: "${YGG_PASSWORD}"
+      TMDB_TOKEN: "${TMDB_TOKEN}"
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.ygege.entrypoints=https'
@@ -234,5 +235,6 @@ networks:
   services:
   global_net:
     external: true
+
 
 
