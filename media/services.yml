@@ -59,6 +59,17 @@ services:
       retries: 3
       start_period: 30s
 
+  cross-seed:
+    image: ghcr.io/cross-seed/cross-seed:6.13.3
+    user: ${TORRENT_UID}:${GID} # this must match your torrent client (cross-seed does not support using PGID and PUID)
+    #ports:
+    #  - "2468:2468"
+    volumes:
+      - ${HOST_PATH}/cross-seed:/config
+      - ${DOWNLOADS_PATH}:/downloads
+    command: daemon
+    restart: unless-stopped
+
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:2.3.0 # Renovate fail to update prowlarr :/
     restart: unless-stopped
@@ -235,6 +246,7 @@ networks:
   services:
   global_net:
     external: true
+
 
 
 
