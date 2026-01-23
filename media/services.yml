@@ -60,7 +60,7 @@ services:
       start_period: 30s
 
   cross-seed:
-    image: ghcr.io/cross-seed/cross-seed:6.13.3
+    image: ghcr.io/cross-seed/cross-seed:6.13.6
     user: ${TORRENT_UID}:${GID} # this must match your torrent client (cross-seed does not support using PGID and PUID)
     #ports:
     #  - "2468:2468"
