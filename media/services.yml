@@ -6,6 +6,7 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+      - services
     environment:
       - PUID=${TORRENT_UID}
       - PGID=${GID}
@@ -27,18 +28,42 @@ services:
     image: flaresolverr/flaresolverr:v3.4.6
     restart: unless-stopped
     networks:
-      - global_net
+      - services
     dns:
       - 1.1.1.1
       - 1.0.0.1
     #ports:
     #  - 8191:8191
 
+  ygege:
+    image: uwucode/ygege:latest
+    restart: unless-stopped
+    #ports:
+    #  - "8715:8715"
+    networks:
+      - services
+    volumes:
+      - ${HOST_PATH}/ygege:/config
+    environment:
+      YGG_USERNAME: "${YGG_USERNAME}"
+      YGG_PASSWORD: "${YGG_PASSWORD}"
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.ygege.entrypoints=https'
+      - 'traefik.http.services.ygege.loadbalancer.server.port=8715'
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8715/health || exit 1"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:2.3.0 # Renovate fail to update prowlarr :/
     restart: unless-stopped
     networks:
       - global_net
+      - services
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -58,6 +83,7 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+      - services
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -80,6 +106,7 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+      - services
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -102,6 +129,7 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+      - services
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -124,6 +152,7 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+      - services
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -146,6 +175,7 @@ services:
 #    restart: unless-stopped
 #    networks:
 #      - global_net
+#      - services
 #    environment:
 #      - PUID=${UID}
 #      - PGID=${GID}
@@ -166,6 +196,7 @@ services:
     image: fallenbagel/jellyseerr:preview-seerr
     networks:
       - global_net
+      - services
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -185,6 +216,7 @@ services:
     restart: unless-stopped
     networks:
       - global_net
+      - services
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -199,6 +231,8 @@ services:
     #  - 8181:8181
 
 networks:
+  services:
   global_net:
     external: true
+
 
