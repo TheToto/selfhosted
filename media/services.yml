@@ -64,14 +64,35 @@ services:
     user: ${TORRENT_UID}:${GID} # this must match your torrent client (cross-seed does not support using PGID and PUID)
     #ports:
     #  - "2468:2468"
+    networks:
+      - services
     volumes:
       - ${HOST_PATH}/cross-seed:/config
       - ${DOWNLOADS_PATH}:/downloads
     command: daemon
     restart: unless-stopped
 
+  autobrr:
+    image: ghcr.io/autobrr/autobrr:v1.71.0
+    restart: unless-stopped
+    user: ${TORRENT_UID}:${GID}
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${HOST_PATH}/autobrr:/config
+    networks:
+      - global_net
+      - services
+    #ports:
+    #  - 7474:7474
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.autobrr.entrypoints=https'
+      - 'traefik.http.services.autobrr.loadbalancer.server.port=7474'
+      - 'traefik.http.routers.autobrr.middlewares=authentik@docker'
+
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:2.3.0 # Renovate fail to update prowlarr :/
+    image: lscr.io/linuxserver/prowlarr:2.3.0
     restart: unless-stopped
     networks:
       - global_net
@@ -246,6 +267,7 @@ networks:
   services:
   global_net:
     external: true
+
 
 
 
