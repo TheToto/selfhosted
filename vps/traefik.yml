@@ -64,6 +64,9 @@ services:
       - '--entrypoints.https.http.tls.domains[0].main=${APP_DOMAIN}'
       - '--entrypoints.https.http.tls.domains[0].sans=*.${APP_DOMAIN}'
       #- '--entrypoints.https.http.middlewares=error-pages@docker'
+      - '--entrypoints.https.transport.respondingTimeouts.readTimeout=0'
+      - '--entrypoints.https.transport.respondingTimeouts.writeTimeout=0'
+      - '--entrypoints.https.transport.respondingTimeouts.idleTimeout=0'
 
       - '--certificatesResolvers.letsencrypt.acme.storage=acme.json'
       - '--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare'
@@ -105,4 +108,5 @@ services:
 networks:
   global_net:
     external: true
+
   socket_docker:
