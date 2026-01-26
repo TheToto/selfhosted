@@ -44,6 +44,7 @@ services:
       - services
     volumes:
       - ${HOST_PATH}/ygege:/config
+      - ${DOWNLOADS_PATH}:/downloads
     environment:
       YGG_USERNAME: "${YGG_USERNAME}"
       YGG_PASSWORD: "${YGG_PASSWORD}"
@@ -279,6 +280,7 @@ networks:
   services:
   global_net:
     external: true
+
 
 
 
