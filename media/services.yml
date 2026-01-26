@@ -49,10 +49,6 @@ services:
       YGG_USERNAME: "${YGG_USERNAME}"
       YGG_PASSWORD: "${YGG_PASSWORD}"
       TMDB_TOKEN: "${TMDB_TOKEN}"
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.ygege.entrypoints=https'
-      - 'traefik.http.services.ygege.loadbalancer.server.port=8715'
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8715/health || exit 1"]
       interval: 1m30s
@@ -78,6 +74,9 @@ services:
     restart: unless-stopped
     #ports:
     #  - "7476:7476"
+    networks:
+      - global_net
+      - services
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.qui.entrypoints=https'
@@ -280,6 +279,7 @@ networks:
   services:
   global_net:
     external: true
+
 
 
 
