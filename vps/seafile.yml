@@ -33,7 +33,7 @@ services:
       - seafile-net
           
   file:
-    image: seafileltd/seafile-pro-mc:13.0.16
+    image: seafileltd/seafile-pro-mc:13.0-latest
     restart: unless-stopped
 #    ports:
 #     - "80:80"
@@ -54,8 +54,11 @@ services:
 
       - SEAFILE_MYSQL_DB_HOST=db
       - SEAFILE_MYSQL_DB_USER=root
-      - SEAFILE_MYSQL_DB_PASSWORD=${SEAFILE_MYSQL_DB_PASSWORD}
       - INIT_SEAFILE_MYSQL_ROOT_PASSWORD=${SEAFILE_MYSQL_DB_PASSWORD}
+      - SEAFILE_MYSQL_DB_PASSWORD=${SEAFILE_MYSQL_DB_PASSWORD}
+      - SEAFILE_MYSQL_DB_CCNET_DB_NAME=ccnet_db
+      - SEAFILE_MYSQL_DB_SEAFILE_DB_NAME=seafile_db
+      - SEAFILE_MYSQL_DB_SEAHUB_DB_NAME=seahub_db
       
       - INIT_SEAFILE_ADMIN_EMAIL=admin@thetoto.fr
       - INIT_SEAFILE_ADMIN_PASSWORD=${SEAFILE_ADMIN_PASSWORD}
@@ -63,10 +66,9 @@ services:
       - SEAFILE_SERVER_HOSTNAME=file.thetoto.fr
       - SEAFILE_SERVER_PROTOCOL=https
 
-      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-
       - ENABLE_GO_FILESERVER=true
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
     depends_on:
       db:
         condition: service_healthy
@@ -81,6 +83,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+# TODO: Add Seafile Notification Server
+# TODO: Add Seadoc
 
 networks:
   seafile-net:
