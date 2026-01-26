@@ -1,0 +1,53 @@
+services:
+  broker:
+    image: docker.io/library/redis:7
+    networks:
+      - paperless
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+
+  paperless:
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.20.5
+    restart: unless-stopped
+    depends_on:
+      - broker
+    #ports:
+    #  - "8010:8000"
+    networks:
+      - paperless
+      - global_net
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.paperless.entrypoints=https'
+      - 'traefik.http.services.paperless.loadbalancer.server.port=8000'
+    volumes:
+      - data:/usr/src/paperless/data
+      - media:/usr/src/paperless/media
+      #- ./export:/usr/src/paperless/export
+      #- ./consume:/usr/src/paperless/consume
+    environment:
+      PAPERLESS_URL: https://paperless.thetoto.fr
+      PAPERLESS_REDIS: redis://broker:6379
+      USERMAP_UID: 1000
+      USERMAP_GID: 1000
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRET_KEY}
+      PAPERLESS_TIME_ZONE: Europe/Paris
+      PAPERLESS_OCR_LANGUAGE: fra
+      PAPERLESS_DISABLE_REGULAR_LOGIN: true
+      PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS: ${PAPERLESS_SOCIALACCOUNT_PROVIDERS}
+      PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true}'
+      PAPERLESS_TASK_WORKERS: 2
+      PAPERLESS_THREADS_PER_WORKER: 1
+      PAPERLESS_WEBSERVER_WORKERS: 1
+
+networks:
+  paperless:
+  global_net:
+    external: true
+
+volumes:
+  data:
+  media:
+  redisdata:
