@@ -1,0 +1,92 @@
+services:
+  db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${SEAFILE_MYSQL_DB_PASSWORD}
+      - MYSQL_LOG_CONSOLE=true
+      - MARIADB_AUTO_UPGRADE=1
+    volumes:
+      - seafile-db:/var/lib/mysql
+    networks:
+      - seafile-net
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/usr/local/bin/healthcheck.sh",
+          "--connect",
+          "--mariadbupgrade",
+          "--innodb_initialized",
+        ]
+
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass "$$REDIS_PASSWORD"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    networks:
+      - seafile-net
+          
+  file:
+    image: seafileltd/seafile-pro-mc:13.0.16
+    restart: unless-stopped
+#    ports:
+#     - "80:80"
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.file.entrypoints=https'
+      - 'traefik.http.routers.file.service=file'
+      - 'traefik.http.services.file.loadbalancer.server.port=80'
+
+      - 'traefik.http.routers.file-webdav.entrypoints=https'
+      - 'traefik.http.routers.file-webdav.rule=Host(`file.thetoto.fr`) && Path(`/webdav`)'
+      - 'traefik.http.routers.file-webdav.service=file-webdav'
+      - 'traefik.http.services.file-webdav.loadbalancer.server.port=8080'
+    volumes:
+      - seafile-data:/shared
+    environment:
+      - TIME_ZONE=Europe/Paris
+
+      - SEAFILE_MYSQL_DB_HOST=db
+      - SEAFILE_MYSQL_DB_USER=root
+      - SEAFILE_MYSQL_DB_PASSWORD=${SEAFILE_MYSQL_DB_PASSWORD}
+      - INIT_SEAFILE_MYSQL_ROOT_PASSWORD=${SEAFILE_MYSQL_DB_PASSWORD}
+      
+      - INIT_SEAFILE_ADMIN_EMAIL=admin@thetoto.fr
+      - INIT_SEAFILE_ADMIN_PASSWORD=${SEAFILE_ADMIN_PASSWORD}
+      
+      - SEAFILE_SERVER_HOSTNAME=file.thetoto.fr
+      - SEAFILE_SERVER_PROTOCOL=https
+
+      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+      - ENABLE_GO_FILESERVER=true
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - seafile-net
+      - global_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  seafile-net:
+  global_net:
+    external: true
+
+volumes:
+  seafile-data:
+  seafile-db:
