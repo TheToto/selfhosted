@@ -39,7 +39,7 @@
         'lscr.io/linuxserver/overseerr',
         'lscr.io/linuxserver/tautulli',
       ],
-      allowedVersions: '<2000',
+      allowedVersions: '<2000', // There is 2021.x.x tags
     },
     {
       matchManagers: [
@@ -48,7 +48,7 @@
       matchPackageNames: [
         'lscr.io/linuxserver/calibre-web',
       ],
-      allowedVersions: '<2',
+      allowedVersions: '<2', // Actual versions are 0.x. There is 2021.x.x and v2, v3, v4 tags... 
     },
     {
       matchManagers: [
@@ -57,7 +57,7 @@
       matchPackageNames: [
         'lscr.io/linuxserver/qbittorrent',
       ],
-      allowedVersions: '<10',
+      allowedVersions: '<10', // Actual version is 3.x.x. There is 14.x.x, 20.x.x tags...
     },
   ],
 }
