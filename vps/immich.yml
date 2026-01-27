@@ -46,7 +46,7 @@ services:
 
   redis:
     container_name: immich_redis
-    image: valkey/valkey:8-bookworm
+    image: valkey/valkey:9
     networks:
       - immich
     restart: unless-stopped
@@ -74,3 +74,4 @@ networks:
   immich:
   global_net:
     external: true
+
