@@ -83,6 +83,7 @@ services:
       - 'traefik.http.services.qui.loadbalancer.server.port=7476'
     volumes:
       - ${HOST_PATH}/qui:/config
+      - ${DOWNLOADS_PATH}:/downloads
 
   autobrr:
     image: ghcr.io/autobrr/autobrr:v1.71.0
@@ -279,6 +280,7 @@ networks:
   services:
   global_net:
     external: true
+
 
 
 
