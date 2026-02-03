@@ -23,7 +23,7 @@ services:
       - authentik-redis:/data
 
   auth:
-    image: ghcr.io/goauthentik/server:2025.12.2
+    image: ghcr.io/goauthentik/server:2025.12.3
     restart: unless-stopped
     command: server
     networks:
@@ -58,7 +58,7 @@ services:
 
 
   worker:
-    image: ghcr.io/goauthentik/server:2025.12.2
+    image: ghcr.io/goauthentik/server:2025.12.3
     restart: unless-stopped
     command: worker
     networks:
