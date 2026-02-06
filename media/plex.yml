@@ -29,7 +29,7 @@ services:
       - 'traefik.http.middlewares.plex-headers.headers.browserXSSFilter=true'
       - 'traefik.http.middlewares.plex-headers.headers.contentTypeNosniff=true'
       - 'traefik.http.middlewares.plex-headers.headers.forceSTSHeader=true'
-      - 'traefik.http.middlewares.plex-headers.headers.SSLHost=thetoto.fr'
+      - 'traefik.http.middlewares.plex-headers.headers.SSLHost=plex.thetoto.fr'
       - 'traefik.http.middlewares.plex-headers.headers.STSIncludeSubdomains=true'
       - 'traefik.http.middlewares.plex-headers.headers.STSPreload=true'
       - 'traefik.http.middlewares.plex-headers.headers.sslproxyheaders.X-Forwarded-Proto=https'
@@ -52,31 +52,46 @@ services:
       - TZ=${TZ}
     volumes:
       - ${HOST_PATH}/plex-auto-languages:/config
-  #jellyfin:
-  #  image: lscr.io/linuxserver/jellyfin:latest
-  #  restart: unless-stopped
-  #  networks:
-  #    - global_net
-  #  environment:
-  #    - PUID=${UID}
-  #    - PGID=${GID}
-  #    - TZ=${TZ}
-  #    - JELLYFIN_PublishedServerUrl=jellyfin.thetoto.fr #optional
-  #  volumes:
-  #    - ${HOST_PATH}/jellyfin:/config
-  #    - ${MEDIA_PATH}:/data/media # media files
-  #  devices:
-  #    - /dev/dri:/dev/dri
-  #  labels:
-  #    - 'traefik.enable=true'
-  #    - 'traefik.http.routers.jellyfin.entrypoints=https'
-  #    - 'traefik.http.services.jellyfin.loadbalancer.server.port=8096'
+
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    restart: unless-stopped
+    networks:
+      - global_net
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+      - JELLYFIN_PublishedServerUrl=jellyfin.thetoto.fr #optional
+    volumes:
+      - ${HOST_PATH}/jellyfin:/config
+      - ${MEDIA_PATH}:/data/media # media files
+    devices:
+      - /dev/dri:/dev/dri
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.jellyfin.entrypoints=https'
+      - 'traefik.http.services.jellyfin.loadbalancer.server.port=8096'
+
+      - 'traefik.http.routers.jellyfin.middlewares=jellyfin-mw'
+      - 'traefik.http.middlewares.jellyfin-mw.headers.customResponseHeaders.X-Robots-Tag=noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex'
+      - 'traefik.http.middlewares.jellyfin-mw.headers.SSLRedirect=true'
+      - 'traefik.http.middlewares.jellyfin-mw.headers.SSLHost=jellyfin.thetoto.fr'
+      - 'traefik.http.middlewares.jellyfin-mw.headers.SSLForceHost=true'
+      - 'traefik.http.middlewares.jellyfin-mw.headers.STSSeconds=315360000'
+      - 'traefik.http.middlewares.jellyfin-mw.headers.STSIncludeSubdomains=true'
+      - 'traefik.http.middlewares.jellyfin-mw.headers.STSPreload=true'
+      - 'traefik.http.middlewares.jellyfin-mw.headers.forceSTSHeader=true'
+      - 'traefik.http.middlewares.jellyfin-mw.headers.frameDeny=true'
+      - 'traefik.http.middlewares.jellyfin-mw.headers.contentTypeNosniff=true'
+      - 'traefik.http.middlewares.jellyfin-mw.headers.customresponseheaders.X-XSS-PROTECTION=1'
+      - "traefik.http.middlewares.jellyfin-mw.headers.customFrameOptionsValue='allow-from https://jellyfin.thetoto.fr'"
     #network_mode: host # DLNA not working with ports
     #ports:
-    #  - 8096:8096
-    #  - 8920:8920 #optional
-    #  - 7359:7359/udp #optional
-    #  - 1900:1900/udp #optional
+    # - 8096:8096 
+    # - 8920:8920 #optional
+    # - 7359:7359/udp #optional
+    # - 1900:1900/udp #optional
 
 networks:
   plex:
