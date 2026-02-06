@@ -66,6 +66,7 @@ services:
     volumes:
       - ${HOST_PATH}/jellyfin:/config
       - ${MEDIA_PATH}:/data/media # media files
+      - /dev/shm:/config/cache/transcodes
     devices:
       - /dev/dri:/dev/dri
     labels:
@@ -97,5 +98,6 @@ networks:
   plex:
   global_net:
     external: true
+
 
 
