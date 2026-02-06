@@ -44,6 +44,7 @@ services:
 
   plexautolanguages:
     image: journeyover/plex-auto-languages:1.4.1
+    restart: unless-stopped
     networks:
       - plex
     environment:
@@ -98,6 +99,7 @@ networks:
   plex:
   global_net:
     external: true
+
 
 
 
