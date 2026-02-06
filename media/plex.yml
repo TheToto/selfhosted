@@ -54,7 +54,7 @@ services:
       - ${HOST_PATH}/plex-auto-languages:/config
 
   jellyfin:
-    image: lscr.io/linuxserver/jellyfin:latest
+    image: lscr.io/linuxserver/jellyfin:10.11.6
     restart: unless-stopped
     networks:
       - global_net
@@ -97,4 +97,5 @@ networks:
   plex:
   global_net:
     external: true
+
 
