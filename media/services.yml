@@ -104,7 +104,7 @@ services:
       - 'traefik.http.services.autobrr.loadbalancer.server.port=7474'
 
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:2.3.0
+    image: lscr.io/linuxserver/prowlarr:version-2.3.0.5236
     restart: unless-stopped
     networks:
       - global_net
