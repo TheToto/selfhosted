@@ -36,7 +36,7 @@ services:
     #  - 8191:8191
 
   ygege:
-    image: uwucode/ygege:latest
+    image: uwucode/ygege:0.8.0
     restart: unless-stopped
     #ports:
     #  - "8715:8715"
@@ -104,7 +104,7 @@ services:
       - 'traefik.http.services.autobrr.loadbalancer.server.port=7474'
 
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:version-2.3.0.5236
+    image: lscr.io/linuxserver/prowlarr:nightly-version-2.3.2.5270
     restart: unless-stopped
     networks:
       - global_net
@@ -296,6 +296,7 @@ networks:
   services:
   global_net:
     external: true
+
 
 
 
