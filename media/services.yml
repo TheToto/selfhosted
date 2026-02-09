@@ -276,7 +276,7 @@ services:
     #  - 8181:8181
 
   watchstate:
-    image: ghcr.io/arabcoders/watchstate:v1.0.7
+    image: ghcr.io/arabcoders/watchstate:v1.0.8
     user: "${UID}:${GID}"
     restart: unless-stopped
     networks:
