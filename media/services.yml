@@ -237,44 +237,6 @@ services:
 #      - 'traefik.http.services.bazarr.loadbalancer.server.port=6767'
 #      - 'traefik.http.routers.bazarr.middlewares=authentik@docker'
 
-  overseerr:
-    image: fallenbagel/jellyseerr:preview-seerr
-    networks:
-      - global_net
-      - services
-    environment:
-      - PUID=${UID}
-      - PGID=${GID}
-      - TZ=${TZ}
-    #ports:
-    #  - 5055:5055
-    volumes:
-      - ${HOST_PATH}/overseerr:/app/config
-    restart: unless-stopped
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.services.overseerr.loadbalancer.server.port=5055'
-      - 'traefik.http.routers.overseerr.entrypoints=https'
-
-  tautulli:
-    image: lscr.io/linuxserver/tautulli:2.16.0
-    restart: unless-stopped
-    networks:
-      - global_net
-      - services
-    environment:
-      - PUID=${UID}
-      - PGID=${GID}
-      - TZ=${TZ}
-    volumes:
-      - ${HOST_PATH}/tautulli:/config
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.services.tautulli.loadbalancer.server.port=8181'
-      - 'traefik.http.routers.tautulli.entrypoints=https'
-    #ports:
-    #  - 8181:8181
-
   watchstate:
     image: ghcr.io/arabcoders/watchstate:v1.0.8
     user: "${UID}:${GID}"
