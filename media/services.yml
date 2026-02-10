@@ -215,6 +215,44 @@ services:
       - 'traefik.http.services.radarr4k.loadbalancer.server.port=7878'
       - 'traefik.http.routers.radarr4k.middlewares=authentik@docker'
 
+  overseerr:
+    image: fallenbagel/jellyseerr:preview-seerr
+    networks:
+      - global_net
+      - services
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    #ports:
+    #  - 5055:5055
+    volumes:
+      - ${HOST_PATH}/overseerr:/app/config
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.services.overseerr.loadbalancer.server.port=5055'
+      - 'traefik.http.routers.overseerr.entrypoints=https'
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:preview-seerr
+    networks:
+      - global_net
+      - services
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    #ports:
+    #  - 5055:5055
+    volumes:
+      - ${HOST_PATH}/jellyseerr:/app/config
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.services.jellyseerr.loadbalancer.server.port=5055'
+      - 'traefik.http.routers.jellyseerr.entrypoints=https'
+
 #  bazarr:
 #    image: lscr.io/linuxserver/bazarr:1.4.5
 #    restart: unless-stopped
@@ -236,61 +274,6 @@ services:
 #      - 'traefik.http.routers.bazarr.entrypoints=https'
 #      - 'traefik.http.services.bazarr.loadbalancer.server.port=6767'
 #      - 'traefik.http.routers.bazarr.middlewares=authentik@docker'
-
-  overseerr:
-    image: fallenbagel/jellyseerr:preview-seerr
-    networks:
-      - global_net
-      - services
-    environment:
-      - PUID=${UID}
-      - PGID=${GID}
-      - TZ=${TZ}
-    #ports:
-    #  - 5055:5055
-    volumes:
-      - ${HOST_PATH}/overseerr:/app/config
-    restart: unless-stopped
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.services.overseerr.loadbalancer.server.port=5055'
-      - 'traefik.http.routers.overseerr.entrypoints=https'
-
-  tautulli:
-    image: lscr.io/linuxserver/tautulli:2.16.0
-    restart: unless-stopped
-    networks:
-      - global_net
-      - services
-    environment:
-      - PUID=${UID}
-      - PGID=${GID}
-      - TZ=${TZ}
-    volumes:
-      - ${HOST_PATH}/tautulli:/config
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.services.tautulli.loadbalancer.server.port=8181'
-      - 'traefik.http.routers.tautulli.entrypoints=https'
-    #ports:
-    #  - 8181:8181
-
-  watchstate:
-    image: ghcr.io/arabcoders/watchstate:v1.0.8
-    user: "${UID}:${GID}"
-    restart: unless-stopped
-    networks:
-      - global_net
-      - services
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.services.watchstate.loadbalancer.server.port=8080'
-      - 'traefik.http.routers.watchstate.entrypoints=https'
-      - 'traefik.http.routers.watchstate.middlewares=authentik@docker'
-    #ports:
-    #  - "8080:8080" # The port which the watchstate will listen on.
-    volumes:
-      - ${HOST_PATH}/watchstate:/config
 
 networks:
   services:

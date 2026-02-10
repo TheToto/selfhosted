@@ -59,5 +59,14 @@
       ],
       allowedVersions: '<10', // Actual version is 3.x.x. There is 14.x.x, 20.x.x tags...
     },
+    {
+      matchManagers: [
+        'docker-compose',
+      ],
+      matchPackageNames: [
+        'getmeili/meilisearch',
+      ],
+      allowedVersions: '<1.10', // Limit to 1.9
+    },
   ],
 }
