@@ -60,6 +60,7 @@ services:
     networks:
       - global_net
       - plex
+      - services
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -79,6 +80,7 @@ services:
     networks:
       - global_net
       - plex
+      - services
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -94,5 +96,6 @@ services:
 
 networks:
   plex:
+  services:
   global_net:
     external: true
