@@ -15,6 +15,8 @@ I use Oracle free tier (4 powerful ARM CPU, 24go RAM, 200go disk) to host Plex a
 ### Plex (plex.yml)
 - **plex**: Media server
 - **plexautolanguages**: Automatic audio/subtitle language selection
+- **tautulli**: Plex analytics and statistics
+- **overseerr**: Request management for Plex
 
 ### Jellyfin (jellyfin.yml)
 - **jellyfin**: Media server
@@ -33,8 +35,6 @@ I use Oracle free tier (4 powerful ARM CPU, 24go RAM, 200go disk) to host Plex a
 - **prowlarr**: Indexer management
 - **sonarr/sonarr4k**: TV show management
 - **radarr/radarr4k**: Movie management
-- **overseerr**: Request management
-- **tautulli**: Plex analytics
 - **watchstate**: Watch state sync between Plex and Jellyfin
 
 ## TODO

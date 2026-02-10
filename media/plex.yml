@@ -54,6 +54,44 @@ services:
     volumes:
       - ${HOST_PATH}/plex-auto-languages:/config
 
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:2.16.0
+    restart: unless-stopped
+    networks:
+      - global_net
+      - plex
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - ${HOST_PATH}/tautulli:/config
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.services.tautulli.loadbalancer.server.port=8181'
+      - 'traefik.http.routers.tautulli.entrypoints=https'
+    #ports:
+    #  - 8181:8181
+
+  overseerr:
+    image: fallenbagel/jellyseerr:preview-seerr
+    restart: unless-stopped
+    networks:
+      - global_net
+      - plex
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - ${HOST_PATH}/overseerr:/app/config
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.services.overseerr.loadbalancer.server.port=5055'
+      - 'traefik.http.routers.overseerr.entrypoints=https'
+    #ports:
+    #  - 5055:5055
+
 networks:
   plex:
   global_net:
