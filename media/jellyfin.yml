@@ -45,12 +45,7 @@ services:
     image: getmeili/meilisearch:v1.35.0
     restart: unless-stopped
     networks:
-      - global_net
       - jellyfin      
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.meilisearch.entrypoints=https'
-      - 'traefik.http.services.meilisearch.loadbalancer.server.port=7700'
     environment:
       MEILI_ENV: production
       MEILI_NO_ANALYTICS: "true"
