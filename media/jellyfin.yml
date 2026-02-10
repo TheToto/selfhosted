@@ -49,6 +49,7 @@ services:
     networks:
       - global_net
       - jellyfin
+      - services
     environment:
       - PUID=${UID}
       - PGID=${GID}
