@@ -58,7 +58,3 @@ networks:
   plex:
   global_net:
     external: true
-
-
-
-

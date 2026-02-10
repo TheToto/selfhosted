@@ -111,7 +111,3 @@ networks:
   jellyfin:
   global_net:
     external: true
-
-
-
-
