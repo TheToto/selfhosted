@@ -86,7 +86,7 @@ services:
       - ${DOWNLOADS_PATH}:/downloads
 
   autobrr:
-    image: ghcr.io/autobrr/autobrr:v1.72.1
+    image: ghcr.io/autobrr/autobrr:v1.73.0
     restart: unless-stopped
     user: ${TORRENT_UID}:${GID}
     environment:
