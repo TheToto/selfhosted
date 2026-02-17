@@ -55,7 +55,7 @@ services:
       - ${HOST_PATH}/plex-auto-languages:/config
 
   tautulli:
-    image: lscr.io/linuxserver/tautulli:2.16.0
+    image: lscr.io/linuxserver/tautulli:2.16.1
     restart: unless-stopped
     networks:
       - global_net
