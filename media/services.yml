@@ -70,7 +70,7 @@ services:
     restart: unless-stopped
 
   qui:
-    image: ghcr.io/autobrr/qui:v1.13.1
+    image: ghcr.io/autobrr/qui:v1.14.0
     restart: unless-stopped
     #ports:
     #  - "7476:7476"
