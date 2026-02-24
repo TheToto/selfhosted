@@ -215,8 +215,8 @@ services:
       - 'traefik.http.services.radarr4k.loadbalancer.server.port=7878'
       - 'traefik.http.routers.radarr4k.middlewares=authentik@docker'
 
-  overseerr:
-    image: fallenbagel/jellyseerr:preview-seerr
+  overseerr: # Seerr instance for Plex
+    image: ghcr.io/seerr-team/seerr:v3.0.1
     networks:
       - global_net
       - services
@@ -234,8 +234,8 @@ services:
       - 'traefik.http.services.overseerr.loadbalancer.server.port=5055'
       - 'traefik.http.routers.overseerr.entrypoints=https'
 
-  jellyseerr:
-    image: fallenbagel/jellyseerr:preview-seerr
+  jellyseerr: # Seerr instance for Jellyfin
+    image: ghcr.io/seerr-team/seerr:v3.0.1
     networks:
       - global_net
       - services
@@ -279,6 +279,7 @@ networks:
   services:
   global_net:
     external: true
+
 
 
 
