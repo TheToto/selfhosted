@@ -217,6 +217,7 @@ services:
 
   overseerr: # Seerr instance for Plex
     image: ghcr.io/seerr-team/seerr:v3.0.1
+    init: true
     networks:
       - global_net
       - services
@@ -236,6 +237,7 @@ services:
 
   jellyseerr: # Seerr instance for Jellyfin
     image: ghcr.io/seerr-team/seerr:v3.0.1
+    init: true
     networks:
       - global_net
       - services
@@ -279,6 +281,7 @@ networks:
   services:
   global_net:
     external: true
+
 
 
 
