@@ -216,7 +216,7 @@ services:
       - 'traefik.http.routers.radarr4k.middlewares=authentik@docker'
 
   overseerr: # Seerr instance for Plex
-    image: ghcr.io/seerr-team/seerr:v3.0.1
+    image: ghcr.io/seerr-team/seerr:v3.1.0
     init: true
     networks:
       - global_net
@@ -236,7 +236,7 @@ services:
       - 'traefik.http.routers.overseerr.entrypoints=https'
 
   jellyseerr: # Seerr instance for Jellyfin
-    image: ghcr.io/seerr-team/seerr:v3.0.1
+    image: ghcr.io/seerr-team/seerr:v3.1.0
     init: true
     networks:
       - global_net
