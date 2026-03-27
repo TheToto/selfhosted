@@ -43,7 +43,7 @@ services:
       #- 32469:32469 # DLNA
 
   plexautolanguages:
-    image: journeyover/plex-auto-languages:1.4.3
+    image: journeyover/plex-auto-languages:1.4.4
     restart: unless-stopped
     networks:
       - plex
