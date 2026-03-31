@@ -33,7 +33,7 @@ services:
       - seafile-net
           
   file:
-    image: seafileltd/seafile-pro-mc:13.0.19
+    image: seafileltd/seafile-pro-mc:13.0.20
     restart: unless-stopped
 #    ports:
 #     - "80:80"
