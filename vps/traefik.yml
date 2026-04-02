@@ -1,5 +1,3 @@
-version: '3.3'
-
 services:
   dockerproxy:
     image: tecnativa/docker-socket-proxy:latest
@@ -9,7 +7,7 @@ services:
     networks:
       - socket_docker
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - /var/run/docker.sock:/var/run/docker.sock
 
   traefik:
     image: traefik:v3.6.12
@@ -29,14 +27,10 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.api.entrypoints=https'
       - 'traefik.http.routers.api.service=api@internal'
-      #- 'traefik.http.routers.api.middlewares=authentik@docker'
-
-      - 'com.centurylinklabs.watchtower.monitor-only=true'
+      - 'traefik.http.routers.api.middlewares=gate'
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_API_KEY=${CF_API_KEY}
-    #extra_hosts:
-    #  - host.docker.internal:127.0.0.1 # For net=host containers (public ip, put in env)
     ports:
       - 80:80
       - 443:443
@@ -58,27 +52,46 @@ services:
         # Accept connections on :443
       - '--entrypoints.https=true'
       - '--entrypoints.https.address=:443'
-      - '--entrypoints.https.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12'
       - '--entrypoints.https.http.tls=true'
       - '--entrypoints.https.http.tls.certResolver=letsencrypt'
       - '--entrypoints.https.http.tls.domains[0].main=${APP_DOMAIN}'
       - '--entrypoints.https.http.tls.domains[0].sans=*.${APP_DOMAIN}'
-      - '--entrypoints.https.transport.respondingTimeouts.readTimeout=0'
-      - '--entrypoints.https.transport.respondingTimeouts.writeTimeout=0'
-      - '--entrypoints.https.transport.respondingTimeouts.idleTimeout=0'
 
       - '--certificatesResolvers.letsencrypt.acme.storage=acme.json'
       - '--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare'
-      # Staging
-      #- '--certificatesResolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
       - '--certificatesResolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory'
 
       - '--log=true'
       - '--log.level=${TRAEFIK_LOG_LEVEL:-INFO}'
-      #- '--log.filepath=/var/log/traefik.log'
 
       - '--accesslog.filepath=/data/access.log'
-      #- '--metrics.prometheus=true'
+
+  gate:
+    image: ghcr.io/steveiliop56/tinyauth:v5.0.6
+    restart: unless-stopped
+    networks:
+      - global_net
+      - socket_docker
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.gate.entrypoints=https'
+      - 'traefik.http.routers.gate.service=gate'
+      - 'traefik.http.services.gate.loadbalancer.server.port=3000'
+      - 'traefik.http.middlewares.gate.forwardauth.address=http://gate:3000/api/auth/traefik'
+
+      - 'socket-proxy.allow.get=/v1\..*/(version|containers/.*|events.*)|/_ping'
+      - 'socket-proxy.allow.head=/_ping'
+    environment:
+      DOCKER_HOST: tcp://dockerproxy:2375
+      TINYAUTH_APPURL: https://gate.${APP_DOMAIN}
+      TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTID: ${GATE_OIDC_CLIENT_ID}
+      TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTSECRET: ${GATE_OIDC_CLIENT_SECRET}
+      TINYAUTH_OAUTH_PROVIDERS_POCKETID_AUTHURL: https://auth.${APP_DOMAIN}/authorize
+      TINYAUTH_OAUTH_PROVIDERS_POCKETID_TOKENURL: https://auth.${APP_DOMAIN}/api/oidc/token
+      TINYAUTH_OAUTH_PROVIDERS_POCKETID_USERINFOURL: https://auth.${APP_DOMAIN}/api/oidc/userinfo
+      TINYAUTH_OAUTH_PROVIDERS_POCKETID_REDIRECTURL: https://gate.${APP_DOMAIN}/api/oauth/callback/pocketid
+      TINYAUTH_OAUTH_PROVIDERS_POCKETID_SCOPES: openid email profile groups
+      TINYAUTH_OAUTH_PROVIDERS_POCKETID_NAME: TheToto Auth
 
 networks:
   global_net:

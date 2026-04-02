@@ -9,10 +9,10 @@ services:
       - PUID=${UID}
       - PGID=${GID}
       - TZ=${TZ}
-      - JELLYFIN_PublishedServerUrl=jellyfin.thetoto.fr #optional
+      - JELLYFIN_PublishedServerUrl=jellyfin.thetoto.fr
     volumes:
       - ${HOST_PATH}/jellyfin:/config
-      - ${MEDIA_PATH}:/data/media # media files
+      - ${MEDIA_PATH}:/data/media
       - /dev/shm:/config/cache/transcodes
     devices:
       - /dev/dri:/dev/dri
@@ -34,26 +34,18 @@ services:
       - 'traefik.http.middlewares.jellyfin-mw.headers.contentTypeNosniff=true'
       - 'traefik.http.middlewares.jellyfin-mw.headers.customresponseheaders.X-XSS-PROTECTION=1'
       - "traefik.http.middlewares.jellyfin-mw.headers.customFrameOptionsValue='allow-from https://jellyfin.thetoto.fr'"
-    #network_mode: host # DLNA not working with ports
-    #ports:
-    # - 8096:8096 
-    # - 8920:8920 #optional
-    # - 7359:7359/udp #optional
-    # - 1900:1900/udp #optional
 
-  meilisearch:
+  meilisearch: # port: 7700
     image: getmeili/meilisearch:v1.35.0
     restart: unless-stopped
     networks:
-      - jellyfin      
+      - jellyfin
     environment:
       MEILI_ENV: production
       MEILI_NO_ANALYTICS: "true"
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
     volumes:
       - ${HOST_PATH}/meilisearch:/meili_data
-    #ports:
-    #  - 7700:7700
 
   # sync watch state with plex for now
   watchstate:
@@ -68,8 +60,6 @@ services:
       - 'traefik.http.services.watchstate.loadbalancer.server.port=8080'
       - 'traefik.http.routers.watchstate.entrypoints=https'
       - 'traefik.http.routers.watchstate.middlewares=authentik@docker'
-    #ports:
-    #  - "8080:8080" # The port which the watchstate will listen on.
     volumes:
       - ${HOST_PATH}/watchstate:/config
 

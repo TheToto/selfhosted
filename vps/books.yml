@@ -1,5 +1,3 @@
-version: "2.1"
-
 # TODO : Switch to Grimmory
 
 services:
@@ -16,8 +14,6 @@ services:
     volumes:
       - ${HOST_PATH}/calibre-web:/config
       - ${HOST_PATH}/books:/books
-    #ports:
-    #  - 8083:8083
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.calibre.entrypoints=https'

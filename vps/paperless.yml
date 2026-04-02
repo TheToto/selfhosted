@@ -12,8 +12,6 @@ services:
     restart: unless-stopped
     depends_on:
       - broker
-    #ports:
-    #  - "8010:8000"
     networks:
       - paperless
       - global_net

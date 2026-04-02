@@ -35,8 +35,6 @@ services:
   file:
     image: seafileltd/seafile-pro-mc:13.0.20
     restart: unless-stopped
-#    ports:
-#     - "80:80"
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.file.entrypoints=https'

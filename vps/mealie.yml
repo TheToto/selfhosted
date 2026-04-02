@@ -8,8 +8,6 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.mealie.entrypoints=https'
       - 'traefik.http.services.mealie.loadbalancer.server.port=9000'
-    #ports:
-    #    - "9000:9000"
     deploy:
       resources:
         limits:

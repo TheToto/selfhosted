@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   pass:
     image: vaultwarden/server:1.35.4
@@ -9,12 +7,9 @@ services:
     volumes:
       - ${HOST_PATH}/data:/data
     environment:
-      WEBSOCKET_ENABLED: 'true' # Required to use websockets
-      SIGNUPS_ALLOWED: 'false' # set to false to disable signups
+      WEBSOCKET_ENABLED: 'true'
+      SIGNUPS_ALLOWED: 'false'
       ADMIN_TOKEN: ${ADMIN_TOKEN}
-    #ports:
-    #  - 80:80
-    #  - 3012:3012
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.pass.entrypoints=https'

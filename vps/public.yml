@@ -1,10 +1,6 @@
-version: "2"
-
 services:
   public:
     image: halverneus/static-file-server:1.8.12
-    #ports:
-    #  - 8080:8080
     networks:
       - global_net
     labels:
