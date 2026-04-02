@@ -80,12 +80,30 @@ services:
       - postgresql
       - redis
 
+  id:
+    image: ghcr.io/pocket-id/pocket-id:v2.5.0
+    restart: unless-stopped
+    networks:
+      - global_net
+    #ports:
+    #  - 1411:1411
+    volumes:
+      - pocketid-data:/app/data
+    labels:
+      - 'traefik.http.routers.id.entrypoints=https'
+      - 'traefik.http.routers.id.service=pass'
+      - 'traefik.http.services.id.loadbalancer.server.port=1411'
+    environment:
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      APP_URL: https://id.thetoto.fr
+
 volumes:
   authentik-database:
   authentik-redis:
   authentik-certs:
   authentik-media:
   authentik-templates:
+  pocketid-data:
 
 networks:
   global_net:
