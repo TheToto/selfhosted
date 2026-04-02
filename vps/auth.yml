@@ -90,12 +90,13 @@ services:
     volumes:
       - pocketid-data:/app/data
     labels:
+      - 'traefik.enable=true'
       - 'traefik.http.routers.id.entrypoints=https'
       - 'traefik.http.routers.id.service=pass'
       - 'traefik.http.services.id.loadbalancer.server.port=1411'
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-      APP_URL: https://id.thetoto.fr
+      APP_URL: https://id.${APP_DOMAIN}
 
 volumes:
   authentik-database:
