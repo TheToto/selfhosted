@@ -67,25 +67,6 @@ services:
 
       - '--accesslog.filepath=/data/access.log'
 
-  authentik-proxy:
-    image: ghcr.io/goauthentik/proxy:2026.2.1
-    networks:
-      - global_net
-    environment:
-      AUTHENTIK_HOST: https://auth.${APP_DOMAIN}
-      AUTHENTIK_INSECURE: "false"
-      AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN}
-    labels:
-      traefik.enable: true
-      traefik.http.routers.authentik.entrypoints: https
-      traefik.http.services.authentik.loadbalancer.server.port: 9000
-      traefik.http.routers.authentik.rule: Host(`auth.media.${APP_DOMAIN}`) || HostRegexp(`{subdomain:[a-z0-9-]+}.${APP_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`) || HostRegexp(`{subdomain:[a-z0-9-]+}.media.${APP_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)
-
-      traefik.http.middlewares.authentik.forwardauth.address: http://authentik-proxy:9000/outpost.goauthentik.io/auth/traefik
-      traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
-      traefik.http.middlewares.authentik.forwardauth.authResponseHeaders: X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version
-    restart: unless-stopped
-
   gate:
     image: ghcr.io/steveiliop56/tinyauth:v5.0.6
     restart: unless-stopped
@@ -103,6 +84,7 @@ services:
       - 'socket-proxy.allow.head=/_ping'
     environment:
       DOCKER_HOST: tcp://dockerproxy:2375
+      TINYAUTH_UI_TITLE: TheToto Gate
       TINYAUTH_APPURL: https://gate.media.${APP_DOMAIN}
       TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTID: ${GATE_OIDC_CLIENT_ID}
       TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTSECRET: ${GATE_OIDC_CLIENT_SECRET}

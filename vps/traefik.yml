@@ -83,6 +83,7 @@ services:
       - 'socket-proxy.allow.head=/_ping'
     environment:
       DOCKER_HOST: tcp://dockerproxy:2375
+      TINYAUTH_UI_TITLE: TheToto Gate
       TINYAUTH_APPURL: https://gate.${APP_DOMAIN}
       TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTID: ${GATE_OIDC_CLIENT_ID}
       TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTSECRET: ${GATE_OIDC_CLIENT_SECRET}

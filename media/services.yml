@@ -20,7 +20,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.torrent.entrypoints=https'
       - 'traefik.http.services.torrent.loadbalancer.server.port=8080'
-      - 'traefik.http.routers.torrent.middlewares=authentik@docker'
+      - 'traefik.http.routers.torrent.middlewares=gate'
 
   flaresolverr: # For Jackett, set to "http://flaresolverr:8191"
     image: flaresolverr/flaresolverr:v3.4.6
@@ -132,7 +132,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.prowlarr.entrypoints=https'
       - 'traefik.http.services.prowlarr.loadbalancer.server.port=9696'
-      - 'traefik.http.routers.prowlarr.middlewares=authentik@docker'
+      - 'traefik.http.routers.prowlarr.middlewares=gate'
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:4.0.17
@@ -155,7 +155,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.sonarr.entrypoints=https'
       - 'traefik.http.services.sonarr.loadbalancer.server.port=8989'
-      - 'traefik.http.routers.sonarr.middlewares=authentik@docker'
+      - 'traefik.http.routers.sonarr.middlewares=gate'
 
   radarr:
     image: lscr.io/linuxserver/radarr:6.0.4
@@ -178,7 +178,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.radarr.entrypoints=https'
       - 'traefik.http.services.radarr.loadbalancer.server.port=7878'
-      - 'traefik.http.routers.radarr.middlewares=authentik@docker'
+      - 'traefik.http.routers.radarr.middlewares=gate'
 
   sonarr4k:
     image: lscr.io/linuxserver/sonarr:4.0.17
@@ -201,7 +201,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.sonarr4k.entrypoints=https'
       - 'traefik.http.services.sonarr4k.loadbalancer.server.port=8989'
-      - 'traefik.http.routers.sonarr4k.middlewares=authentik@docker'
+      - 'traefik.http.routers.sonarr4k.middlewares=gate'
 
   radarr4k:
     image: lscr.io/linuxserver/radarr:6.0.4
@@ -224,7 +224,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.radarr4k.entrypoints=https'
       - 'traefik.http.services.radarr4k.loadbalancer.server.port=7878'
-      - 'traefik.http.routers.radarr4k.middlewares=authentik@docker'
+      - 'traefik.http.routers.radarr4k.middlewares=gate'
 
   overseerr: # Seerr instance for Plex
     image: ghcr.io/seerr-team/seerr:v3.1.0
@@ -286,7 +286,7 @@ services:
 #      - 'traefik.enable=true'
 #      - 'traefik.http.routers.bazarr.entrypoints=https'
 #      - 'traefik.http.services.bazarr.loadbalancer.server.port=6767'
-#      - 'traefik.http.routers.bazarr.middlewares=authentik@docker'
+#      - 'traefik.http.routers.bazarr.middlewares=gate'
 
 networks:
   services:
