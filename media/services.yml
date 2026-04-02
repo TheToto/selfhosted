@@ -96,8 +96,6 @@ services:
     image: ghcr.io/autobrr/autobrr:v1.75.1
     restart: unless-stopped
     user: ${TORRENT_UID}:${GID}
-    environment:
-      - TZ=${TZ}
     volumes:
       - ${HOST_PATH}/autobrr:/config
     networks:
@@ -110,6 +108,7 @@ services:
       - 'traefik.http.routers.autobrr.entrypoints=https'
       - 'traefik.http.services.autobrr.loadbalancer.server.port=7474'
     environment:
+      TZ: ${TZ}
       AUTOBRR__OIDC_ENABLED: true
       AUTOBRR__OIDC_ISSUER: ${AUTOBRR_OIDC_ISSUER}
       AUTOBRR__OIDC_CLIENT_ID: ${AUTOBRR_OIDC_CLIENT_ID}
