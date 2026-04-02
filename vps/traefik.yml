@@ -63,7 +63,6 @@ services:
       - '--entrypoints.https.http.tls.certResolver=letsencrypt'
       - '--entrypoints.https.http.tls.domains[0].main=${APP_DOMAIN}'
       - '--entrypoints.https.http.tls.domains[0].sans=*.${APP_DOMAIN}'
-      #- '--entrypoints.https.http.middlewares=error-pages@docker'
       - '--entrypoints.https.transport.respondingTimeouts.readTimeout=0'
       - '--entrypoints.https.transport.respondingTimeouts.writeTimeout=0'
       - '--entrypoints.https.transport.respondingTimeouts.idleTimeout=0'
@@ -80,30 +79,6 @@ services:
 
       - '--accesslog.filepath=/data/access.log'
       #- '--metrics.prometheus=true'
-
-  nginxError:
-    container_name: nginxError
-    image: nginx:latest
-    restart: unless-stopped
-    volumes:
-      - ./error-pages/html:/usr/share/nginx/error-pages
-      - ./error-pages/nginx-error-pages.conf:/etc/nginx/conf.d/default.conf
-    networks:
-      - global_net
-    #ports:
-    #  - 80:80
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.error-router.entrypoints=https'
-      - 'traefik.http.services.error-pages-service.loadbalancer.server.port=80'
-
-      - 'traefik.http.routers.error-router.rule=HostRegexp(`{host:.+}`)'
-      - 'traefik.http.routers.error-router.priority=1'
-      - 'traefik.http.routers.error-router.middlewares=error-pages@docker'
-
-      - 'traefik.http.middlewares.error-pages.errors.status=400-599'
-      - 'traefik.http.middlewares.error-pages.errors.service=error-pages-service'
-      - 'traefik.http.middlewares.error-pages.errors.query=/{status}.html'
 
 networks:
   global_net:

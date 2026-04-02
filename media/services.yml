@@ -84,6 +84,13 @@ services:
     volumes:
       - ${HOST_PATH}/qui:/config
       - ${DOWNLOADS_PATH}:/downloads
+    environment:
+      QUI__OIDC_ENABLED: true
+      QUI__OIDC_ISSUER: ${QUI_OIDC_ISSUER}
+      QUI__OIDC_CLIENT_ID: ${QUI_OIDC_CLIENT_ID}
+      QUI__OIDC_CLIENT_SECRET: ${QUI_OIDC_CLIENT_SECRET}
+      QUI__OIDC_REDIRECT_URL: https://qui.media.thetoto.fr/api/auth/oidc/callback
+      QUI__OIDC_DISABLE_BUILT_IN_LOGIN: true
 
   autobrr:
     image: ghcr.io/autobrr/autobrr:v1.75.1
@@ -102,6 +109,13 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.autobrr.entrypoints=https'
       - 'traefik.http.services.autobrr.loadbalancer.server.port=7474'
+    environment:
+      AUTOBRR__OIDC_ENABLED: true
+      AUTOBRR__OIDC_ISSUER: ${AUTOBRR_OIDC_ISSUER}
+      AUTOBRR__OIDC_CLIENT_ID: ${AUTOBRR_OIDC_CLIENT_ID}
+      AUTOBRR__OIDC_CLIENT_SECRET: ${AUTOBRR_OIDC_CLIENT_SECRET}
+      AUTOBRR__OIDC_REDIRECT_URL: https://autobrr.media.thetoto.fr/api/auth/oidc/callback
+      AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: false
 
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:nightly-version-2.3.2.5270
