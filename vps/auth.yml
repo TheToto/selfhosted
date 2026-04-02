@@ -97,6 +97,7 @@ services:
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       APP_URL: https://id.${APP_DOMAIN}
+      TRUST_PROXY: true
 
 volumes:
   authentik-database:
