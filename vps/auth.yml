@@ -90,6 +90,7 @@ services:
     volumes:
       - pocketid-data:/app/data
     labels:
+      - 'traefik.enable=true'
       - 'traefik.http.routers.id.entrypoints=https'
       - 'traefik.http.routers.id.service=id'
       - 'traefik.http.services.id.loadbalancer.server.port=1411'
