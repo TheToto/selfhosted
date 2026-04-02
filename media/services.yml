@@ -84,7 +84,7 @@ services:
       - ${DOWNLOADS_PATH}:/downloads
     environment:
       QUI__OIDC_ENABLED: true
-      QUI__OIDC_ISSUER: https://auth.thetoto.fr
+      QUI__OIDC_ISSUER: https://id.thetoto.fr
       QUI__OIDC_CLIENT_ID: ${QUI_OIDC_CLIENT_ID}
       QUI__OIDC_CLIENT_SECRET: ${QUI_OIDC_CLIENT_SECRET}
       QUI__OIDC_REDIRECT_URL: https://qui.media.thetoto.fr/api/auth/oidc/callback
@@ -108,7 +108,7 @@ services:
     environment:
       TZ: ${TZ}
       AUTOBRR__OIDC_ENABLED: true
-      AUTOBRR__OIDC_ISSUER: https://auth.thetoto.fr
+      AUTOBRR__OIDC_ISSUER: https://id.thetoto.fr
       AUTOBRR__OIDC_CLIENT_ID: ${AUTOBRR_OIDC_CLIENT_ID}
       AUTOBRR__OIDC_CLIENT_SECRET: ${AUTOBRR_OIDC_CLIENT_SECRET}
       AUTOBRR__OIDC_REDIRECT_URL: https://autobrr.media.thetoto.fr/api/auth/oidc/callback

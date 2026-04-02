@@ -20,7 +20,7 @@ services:
     volumes:
       - authentik-redis:/data
 
-  auth2:
+  auth:
     image: ghcr.io/goauthentik/server:2026.2.1
     restart: unless-stopped
     command: server
@@ -43,11 +43,11 @@ services:
       - redis
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.auth2.entrypoints=https'
-      - 'traefik.http.routers.auth2.rule=Host(`auth2.${APP_DOMAIN}`) || HostRegexp(`{subdomain:[a-z0-9-]+}.${APP_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)'
-      - 'traefik.http.services.auth2.loadbalancer.server.port=9000'
+      - 'traefik.http.routers.auth.entrypoints=https'
+      - 'traefik.http.routers.auth.rule=Host(`auth.${APP_DOMAIN}`) || HostRegexp(`{subdomain:[a-z0-9-]+}.${APP_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)'
+      - 'traefik.http.services.auth.loadbalancer.server.port=9000'
 
-      - 'traefik.http.middlewares.authentik.forwardauth.address=http://auth2:9000/outpost.goauthentik.io/auth/traefik'
+      - 'traefik.http.middlewares.authentik.forwardauth.address=http://auth:9000/outpost.goauthentik.io/auth/traefik'
       - 'traefik.http.middlewares.authentik.forwardauth.trustForwardHeader=true'
       - 'traefik.http.middlewares.authentik.forwardauth.authResponseHeaders=X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version'
 
@@ -74,7 +74,7 @@ services:
       - postgresql
       - redis
 
-  auth:
+  id:
     image: ghcr.io/pocket-id/pocket-id:v2.5.0
     restart: unless-stopped
     networks:
@@ -83,12 +83,12 @@ services:
       - pocketid-data:/app/data
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.auth.entrypoints=https'
-      - 'traefik.http.routers.auth.service=auth'
-      - 'traefik.http.services.auth.loadbalancer.server.port=1411'
+      - 'traefik.http.routers.id.entrypoints=https'
+      - 'traefik.http.routers.id.service=id'
+      - 'traefik.http.services.id.loadbalancer.server.port=1411'
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-      APP_URL: https://auth.${APP_DOMAIN}
+      APP_URL: https://id.${APP_DOMAIN}
       TRUST_PROXY: true
 
 volumes:

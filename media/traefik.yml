@@ -72,14 +72,14 @@ services:
     networks:
       - global_net
     environment:
-      AUTHENTIK_HOST: https://auth2.${APP_DOMAIN}
+      AUTHENTIK_HOST: https://auth.${APP_DOMAIN}
       AUTHENTIK_INSECURE: "false"
       AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN}
     labels:
       traefik.enable: true
       traefik.http.routers.authentik.entrypoints: https
       traefik.http.services.authentik.loadbalancer.server.port: 9000
-      traefik.http.routers.authentik.rule: Host(`auth2.media.${APP_DOMAIN}`) || HostRegexp(`{subdomain:[a-z0-9-]+}.${APP_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`) || HostRegexp(`{subdomain:[a-z0-9-]+}.media.${APP_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)
+      traefik.http.routers.authentik.rule: Host(`auth.media.${APP_DOMAIN}`) || HostRegexp(`{subdomain:[a-z0-9-]+}.${APP_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`) || HostRegexp(`{subdomain:[a-z0-9-]+}.media.${APP_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)
 
       traefik.http.middlewares.authentik.forwardauth.address: http://authentik-proxy:9000/outpost.goauthentik.io/auth/traefik
       traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
@@ -106,9 +106,9 @@ services:
       TINYAUTH_APPURL: https://gate.media.${APP_DOMAIN}
       TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTID: ${GATE_OIDC_CLIENT_ID}
       TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTSECRET: ${GATE_OIDC_CLIENT_SECRET}
-      TINYAUTH_OAUTH_PROVIDERS_POCKETID_AUTHURL: https://auth.${APP_DOMAIN}/authorize
-      TINYAUTH_OAUTH_PROVIDERS_POCKETID_TOKENURL: https://auth.${APP_DOMAIN}/api/oidc/token
-      TINYAUTH_OAUTH_PROVIDERS_POCKETID_USERINFOURL: https://auth.${APP_DOMAIN}/api/oidc/userinfo
+      TINYAUTH_OAUTH_PROVIDERS_POCKETID_AUTHURL: https://id.${APP_DOMAIN}/authorize
+      TINYAUTH_OAUTH_PROVIDERS_POCKETID_TOKENURL: https://id.${APP_DOMAIN}/api/oidc/token
+      TINYAUTH_OAUTH_PROVIDERS_POCKETID_USERINFOURL: https://id.${APP_DOMAIN}/api/oidc/userinfo
       TINYAUTH_OAUTH_PROVIDERS_POCKETID_REDIRECTURL: https://gate.media.${APP_DOMAIN}/api/oauth/callback/pocketid
       TINYAUTH_OAUTH_PROVIDERS_POCKETID_SCOPES: openid email profile groups
       TINYAUTH_OAUTH_PROVIDERS_POCKETID_NAME: TheToto Auth
