@@ -158,7 +158,7 @@ services:
       - 'traefik.http.routers.sonarr.middlewares=gate'
 
   radarr:
-    image: lscr.io/linuxserver/radarr:6.0.4
+    image: lscr.io/linuxserver/radarr:6.1.1
     restart: unless-stopped
     networks:
       - global_net
@@ -204,7 +204,7 @@ services:
       - 'traefik.http.routers.sonarr4k.middlewares=gate'
 
   radarr4k:
-    image: lscr.io/linuxserver/radarr:6.0.4
+    image: lscr.io/linuxserver/radarr:6.1.1
     restart: unless-stopped
     networks:
       - global_net
