@@ -78,7 +78,7 @@ services:
       - 'traefik.http.routers.gate.service=gate'
       - 'traefik.http.services.gate.loadbalancer.server.port=3000'
       - 'traefik.http.middlewares.gate.forwardauth.address=http://gate:3000/api/auth/traefik'
-      - 'traefik.http.middlewares.gate.forwardauth.authResponseHeaders: Remote-User'
+      - 'traefik.http.middlewares.gate.forwardauth.authResponseHeaders=Remote-User'
 
       - 'socket-proxy.allow.get=/v1\..*/(version|containers/.*|events.*)|/_ping'
       - 'socket-proxy.allow.head=/_ping'
