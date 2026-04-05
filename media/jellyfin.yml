@@ -59,7 +59,6 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.services.watchstate.loadbalancer.server.port=8080'
       - 'traefik.http.routers.watchstate.entrypoints=https'
-      - 'traefik.http.routers.watchstate.middlewares=gate'
     volumes:
       - ${HOST_PATH}/watchstate:/config
 
