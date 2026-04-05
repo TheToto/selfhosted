@@ -1,5 +1,5 @@
 services:
-  torrent:
+  torrent: # Port : 8080
     image: lscr.io/linuxserver/qbittorrent:5.1.4
     restart: unless-stopped
     networks:
@@ -14,15 +14,9 @@ services:
       - ${DOWNLOADS_PATH}:/downloads
       - ${HOST_PATH}/qbittorrent:/config
     ports:
-      - 6881:6881
-    #  - 8080:8080
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.torrent.entrypoints=https'
-      - 'traefik.http.services.torrent.loadbalancer.server.port=8080'
-      - 'traefik.http.routers.torrent.middlewares=gate'
+      - 6881:6881 # BtTorrent port
 
-  flaresolverr: # For Jackett, set to "http://flaresolverr:8191"
+  flaresolverr: # For Prowlarr, set to "http://flaresolverr:8191"
     image: flaresolverr/flaresolverr:v3.4.6
     restart: unless-stopped
     networks:
@@ -30,14 +24,10 @@ services:
     dns:
       - 1.1.1.1
       - 1.0.0.1
-    #ports:
-    #  - 8191:8191
 
-  ygege:
+  ygege: # Port : 8715
     image: uwucode/ygege:0.9.1
     restart: unless-stopped
-    #ports:
-    #  - "8715:8715"
     networks:
       - services
     volumes:
@@ -54,11 +44,9 @@ services:
       retries: 3
       start_period: 30s
 
-  cross-seed:
+  cross-seed: # Port : 2468
     image: ghcr.io/cross-seed/cross-seed:6.13.6
     user: ${TORRENT_UID}:${GID} # this must match your torrent client (cross-seed does not support using PGID and PUID)
-    #ports:
-    #  - "2468:2468"
     networks:
       - services
     volumes:
@@ -70,8 +58,6 @@ services:
   qui:
     image: ghcr.io/autobrr/qui:v1.15.0
     restart: unless-stopped
-    #ports:
-    #  - "7476:7476"
     networks:
       - global_net
       - services
@@ -99,8 +85,6 @@ services:
     networks:
       - global_net
       - services
-    #ports:
-    #  - 7474:7474
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.autobrr.entrypoints=https'
@@ -126,13 +110,12 @@ services:
       - TZ=${TZ}
     volumes:
       - ${HOST_PATH}/prowlarr:/config
-    #ports:
-    #  - 9696:9696
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.prowlarr.entrypoints=https'
       - 'traefik.http.services.prowlarr.loadbalancer.server.port=9696'
       - 'traefik.http.routers.prowlarr.middlewares=gate'
+      - 'tinyauth.apps.prowlarr.path.allow=^/api(/.*|$$)'
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:4.0.17
@@ -149,13 +132,12 @@ services:
       - ${HOST_PATH}/sonarr:/config
       - ${MEDIA_PATH}:/media
       - ${DOWNLOADS_PATH}:/downloads
-    #ports:
-    #  - 8989:8989
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.sonarr.entrypoints=https'
       - 'traefik.http.services.sonarr.loadbalancer.server.port=8989'
       - 'traefik.http.routers.sonarr.middlewares=gate'
+      - 'tinyauth.apps.sonarr.path.allow=^/api(/.*|$$)'
 
   radarr:
     image: lscr.io/linuxserver/radarr:6.1.1
@@ -172,13 +154,12 @@ services:
       - ${HOST_PATH}/radarr:/config
       - ${MEDIA_PATH}:/media
       - ${DOWNLOADS_PATH}:/downloads
-    #ports:
-    #  - 7878:7878
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.radarr.entrypoints=https'
       - 'traefik.http.services.radarr.loadbalancer.server.port=7878'
       - 'traefik.http.routers.radarr.middlewares=gate'
+      - 'tinyauth.apps.radarr.path.allow=^/api(/.*|$$)'
 
   sonarr4k:
     image: lscr.io/linuxserver/sonarr:4.0.17
@@ -195,13 +176,12 @@ services:
       - ${HOST_PATH}/sonarr4k:/config
       - ${MEDIA_PATH}:/media
       - ${DOWNLOADS_PATH}:/downloads
-    #ports:
-    #  - 8989:8989
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.sonarr4k.entrypoints=https'
       - 'traefik.http.services.sonarr4k.loadbalancer.server.port=8989'
       - 'traefik.http.routers.sonarr4k.middlewares=gate'
+      - 'tinyauth.apps.sonarr4k.path.allow=^/api(/.*|$$)'
 
   radarr4k:
     image: lscr.io/linuxserver/radarr:6.1.1
@@ -218,13 +198,12 @@ services:
       - ${HOST_PATH}/radarr4k:/config
       - ${MEDIA_PATH}:/media
       - ${DOWNLOADS_PATH}:/downloads
-    #ports:
-    #  - 7878:7878
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.radarr4k.entrypoints=https'
       - 'traefik.http.services.radarr4k.loadbalancer.server.port=7878'
       - 'traefik.http.routers.radarr4k.middlewares=gate'
+      - 'tinyauth.apps.radarr4k.path.allow=^/api(/.*|$$)'
 
   overseerr: # Seerr instance for Plex
     image: ghcr.io/seerr-team/seerr:v3.1.0
@@ -236,8 +215,6 @@ services:
       - PUID=${UID}
       - PGID=${GID}
       - TZ=${TZ}
-    #ports:
-    #  - 5055:5055
     volumes:
       - ${HOST_PATH}/overseerr:/app/config
     restart: unless-stopped
@@ -256,8 +233,6 @@ services:
       - PUID=${UID}
       - PGID=${GID}
       - TZ=${TZ}
-    #ports:
-    #  - 5055:5055
     volumes:
       - ${HOST_PATH}/jellyseerr:/app/config
     restart: unless-stopped
@@ -265,28 +240,6 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.services.jellyseerr.loadbalancer.server.port=5055'
       - 'traefik.http.routers.jellyseerr.entrypoints=https'
-
-#  bazarr:
-#    image: lscr.io/linuxserver/bazarr:1.4.5
-#    restart: unless-stopped
-#    networks:
-#      - global_net
-#      - services
-#    environment:
-#      - PUID=${UID}
-#      - PGID=${GID}
-#      - TZ=${TZ}
-#    volumes:
-#      - /etc/localtime:/etc/localtime:ro
-#      - ${HOST_PATH}/bazarr:/config
-#      - ${MEDIA_PATH}:/media
-#    #ports:
-#    #  - 6767:6767
-#    labels:
-#      - 'traefik.enable=true'
-#      - 'traefik.http.routers.bazarr.entrypoints=https'
-#      - 'traefik.http.services.bazarr.loadbalancer.server.port=6767'
-#      - 'traefik.http.routers.bazarr.middlewares=gate'
 
 networks:
   services:
