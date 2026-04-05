@@ -28,7 +28,7 @@ services:
       - "traefik.http.middlewares.https-headers-books.headers.STSSeconds=31536000"
       - "traefik.http.middlewares.https-headers-books.headers.customFrameOptionsValue=SAMEORIGIN"
 
-      - 'traefik.http.routers.calibre.middlewares=https-headers-books,kobo-sync-headers,authentik@docker'
+      - 'traefik.http.routers.calibre.middlewares=https-headers-books,kobo-sync-headers,gate'
 
       - 'traefik.http.middlewares.kobo-sync-headers.headers.customrequestheaders.X-Scheme=https'
 
