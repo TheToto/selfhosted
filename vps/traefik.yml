@@ -64,7 +64,7 @@ services:
       - '--log=true'
       - '--log.level=${TRAEFIK_LOG_LEVEL:-INFO}'
 
-      - '--accesslog.filepath=/data/access.log'
+      #- '--accesslog.filepath=/data/access.log'
 
   gate:
     image: ghcr.io/steveiliop56/tinyauth:v5.0.6
