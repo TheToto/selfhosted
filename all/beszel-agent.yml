@@ -1,0 +1,18 @@
+services:
+  beszel-agent:
+    image: henrygd/beszel-agent:0.18.7
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - beszel_agent_data:/var/lib/beszel-agent
+      # monitor other disks / partitions by mounting a folder in /extra-filesystems
+      # - /mnt/disk/.beszel:/extra-filesystems/sda1:ro
+    environment:
+      LISTEN: 45876
+      TOKEN: ${BESZEL_AGENT_TOKEN}
+      KEY: ${BESZEL_AGENT_KEY}
+      HUB_URL: https://metrics.thetoto.fr
+
+volumes:
+  beszel_agent_data:
