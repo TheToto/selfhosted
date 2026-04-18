@@ -56,7 +56,7 @@ services:
     restart: unless-stopped
 
   qui:
-    image: ghcr.io/autobrr/qui:v1.16.1
+    image: ghcr.io/autobrr/qui:v1.17.0
     restart: unless-stopped
     networks:
       - global_net
