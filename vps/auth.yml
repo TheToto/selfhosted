@@ -1,6 +1,6 @@
 services:
   id:
-    image: ghcr.io/pocket-id/pocket-id:v2.5.0
+    image: ghcr.io/pocket-id/pocket-id:v2.6.0
     restart: unless-stopped
     networks:
       - global_net
