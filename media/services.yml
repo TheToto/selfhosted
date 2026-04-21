@@ -25,36 +25,6 @@ services:
       - 1.1.1.1
       - 1.0.0.1
 
-  ygege: # Port : 8715
-    image: uwucode/ygege:0.9.1
-    restart: unless-stopped
-    networks:
-      - services
-    volumes:
-      - ${HOST_PATH}/ygege:/config
-      - ${DOWNLOADS_PATH}:/downloads
-    environment:
-      YGG_USERNAME: "${YGG_USERNAME}"
-      YGG_PASSWORD: "${YGG_PASSWORD}"
-      TMDB_TOKEN: "${TMDB_TOKEN}"
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8715/health || exit 1"]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-
-  cross-seed: # Port : 2468
-    image: ghcr.io/cross-seed/cross-seed:6.13.6
-    user: ${TORRENT_UID}:${GID} # this must match your torrent client (cross-seed does not support using PGID and PUID)
-    networks:
-      - services
-    volumes:
-      - ${HOST_PATH}/cross-seed:/config
-      - ${DOWNLOADS_PATH}:/downloads
-    command: daemon
-    restart: unless-stopped
-
   qui:
     image: ghcr.io/autobrr/qui:v1.17.0
     restart: unless-stopped
