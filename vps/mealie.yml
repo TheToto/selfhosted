@@ -1,6 +1,6 @@
 services:
   mealie:
-    image: ghcr.io/mealie-recipes/mealie:v3.16.0
+    image: ghcr.io/mealie-recipes/mealie:v3.17.0
     restart: unless-stopped
     networks:
       - global_net
