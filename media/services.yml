@@ -1,6 +1,6 @@
 services:
   torrent: # Port : 8080
-    image: lscr.io/linuxserver/qbittorrent:5.1.4
+    image: lscr.io/linuxserver/qbittorrent:5.2.0
     restart: unless-stopped
     networks:
       - global_net
