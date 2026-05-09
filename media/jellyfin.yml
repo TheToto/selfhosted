@@ -49,7 +49,7 @@ services:
 
   # sync watch state with plex for now
   watchstate:
-    image: ghcr.io/arabcoders/watchstate:v1.8.0
+    image: ghcr.io/arabcoders/watchstate:v1.8.1
     user: "${UID}:${GID}"
     restart: unless-stopped
     networks:
