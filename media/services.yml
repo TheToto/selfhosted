@@ -47,7 +47,7 @@ services:
       QUI__OIDC_DISABLE_BUILT_IN_LOGIN: true
 
   autobrr:
-    image: ghcr.io/autobrr/autobrr:v1.77.1
+    image: ghcr.io/autobrr/autobrr:v1.78.0
     restart: unless-stopped
     user: ${TORRENT_UID}:${GID}
     volumes:
