@@ -17,7 +17,7 @@ services:
       - 6881:6881 # BtTorrent port
 
   flaresolverr: # For Prowlarr, set to "http://flaresolverr:8191"
-    image: flaresolverr/flaresolverr:v3.4.6
+    image: flaresolverr/flaresolverr:v3.5.0
     restart: unless-stopped
     networks:
       - services
