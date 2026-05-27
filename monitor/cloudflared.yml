@@ -1,6 +1,6 @@
 services:
   cloudflared:
-    image: cloudflare/cloudflared:2026.5.1
+    image: cloudflare/cloudflared:2026.5.2
     restart: unless-stopped
     command: tunnel run
     networks:
