@@ -110,7 +110,7 @@ services:
       - 'tinyauth.apps.sonarr.path.allow=^/api(/.*|$$)'
 
   radarr:
-    image: lscr.io/linuxserver/radarr:6.2.1
+    image: lscr.io/linuxserver/radarr:6.3.0
     restart: unless-stopped
     networks:
       - global_net
@@ -154,7 +154,7 @@ services:
       - 'tinyauth.apps.sonarr4k.path.allow=^/api(/.*|$$)'
 
   radarr4k:
-    image: lscr.io/linuxserver/radarr:6.2.1
+    image: lscr.io/linuxserver/radarr:6.3.0
     restart: unless-stopped
     networks:
       - global_net
