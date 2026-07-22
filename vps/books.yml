@@ -32,6 +32,9 @@ services:
 
       - 'traefik.http.middlewares.kobo-sync-headers.headers.customrequestheaders.X-Scheme=https'
 
+      - 'tinyauth.apps.calibre-web.path.allow=^/(opds|kobo|api|cover|download)(/.*|$$)'
+
+
 networks:
   global_net:
     external: true
