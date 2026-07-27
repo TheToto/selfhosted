@@ -15,7 +15,7 @@
   automerge: false,
   ignoreTests: true,
   automergeSchedule: [
-    'after 1:00am and before 8:00am',
+    'after 1:00am and before 6:00am',
   ],
   packageRules: [
     {
