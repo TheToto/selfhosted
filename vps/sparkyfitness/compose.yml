@@ -1,0 +1,77 @@
+services:
+  sparkyfitness-db:
+    image: postgres:18.3-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sparkyfitness_db
+      POSTGRES_USER: sparky
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PUID: ${PUID:-1000}
+      GUID: ${GUID:-1000}
+    volumes:
+      - data-postgresql:/var/lib/postgresql
+    networks:
+      - sparkyfitness-network
+
+  sparkyfitness-server:
+    image: codewithcj/sparkyfitness_server:latest
+    environment:
+      SPARKY_FITNESS_DB_USER: sparky
+      SPARKY_FITNESS_DB_HOST: sparkyfitness-db
+      SPARKY_FITNESS_DB_NAME: sparkyfitness_db
+      SPARKY_FITNESS_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      SPARKY_FITNESS_APP_DB_USER: parkyapp
+      SPARKY_FITNESS_APP_DB_PASSWORD: ${SPARKY_FITNESS_APP_DB_PASSWORD}
+      SPARKY_FITNESS_DB_PORT: 5432
+      SPARKY_FITNESS_API_ENCRYPTION_KEY: ${SPARKY_FITNESS_API_ENCRYPTION_KEY}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      SPARKY_FITNESS_FRONTEND_URL: "https://fitness.${DOMAIN_NAME}"
+      SPARKY_FITNESS_DISABLE_SIGNUP: false
+      SPARKY_FITNESS_ADMIN_EMAIL: ${SPARKY_ADMIN_EMAIL}
+      SPARKY_FITNESS_EMAIL_HOST: ${SMTP_HOST}
+      SPARKY_FITNESS_EMAIL_PORT: ${SMTP_PORT:-587}
+      SPARKY_FITNESS_EMAIL_SECURE: true
+      SPARKY_FITNESS_EMAIL_USER: ${SMTP_USER}
+      SPARKY_FITNESS_EMAIL_PASS: ${SMTP_PASS}
+      SPARKY_FITNESS_EMAIL_FROM: "noreply+sparkyfitness@${DOMAIN_NAME}"
+      #GARMIN_MICROSERVICE_URL: http://sparkyfitness-garmin:8000 # Add Garmin microservice URL
+      PUID: ${PUID:-1000}
+      GUID: ${GUID:-1000}
+    networks:
+      - sparkyfitness-network
+    restart: unless-stopped
+    depends_on:
+      - sparkyfitness-db
+    volumes:
+      - sparky-backup:/app/SparkyFitnessServer/backup
+      - sparky-uploads:/app/SparkyFitnessServer/uploads
+
+  fitness:
+    image: codewithcj/sparkyfitness:latest
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.fitness.entrypoints=https'
+      - 'traefik.http.routers.fitness.service=fitness'
+      - 'traefik.http.services.fitness.loadbalancer.server.port=80'
+    environment:
+      SPARKY_FITNESS_FRONTEND_URL: "https://fitness.${DOMAIN_NAME}"
+      SPARKY_FITNESS_SERVER_HOST: sparkyfitness-server
+      SPARKY_FITNESS_SERVER_PORT: 3010
+      PUID: ${PUID:-1000}
+      GUID: ${GUID:-1000}
+    networks:
+      - sparkyfitness-network
+      - global_net
+    restart: unless-stopped
+    depends_on:
+      - sparkyfitness-server
+
+networks:
+  sparkyfitness-network:
+  global_net:
+    external: true
+
+volumes:
+  data-postgresql:
+  sparky-uploads:
+  sparky-backup:
