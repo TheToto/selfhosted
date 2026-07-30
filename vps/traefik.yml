@@ -75,7 +75,6 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.gate.entrypoints=https'
-      - 'traefik.http.routers.gate.service=gate'
       - 'traefik.http.services.gate.loadbalancer.server.port=3000'
       - 'traefik.http.middlewares.gate.forwardauth.address=http://gate:3000/api/auth/traefik'
       - 'traefik.http.middlewares.gate.forwardauth.authResponseHeaders=Remote-User'

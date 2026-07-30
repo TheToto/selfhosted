@@ -38,7 +38,6 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.file.entrypoints=https'
-      - 'traefik.http.routers.file.service=file'
       - 'traefik.http.services.file.loadbalancer.server.port=80'
 
       - 'traefik.http.routers.file-webdav.entrypoints=https'

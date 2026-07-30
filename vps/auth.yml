@@ -9,7 +9,6 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.id.entrypoints=https'
-      - 'traefik.http.routers.id.service=id'
       - 'traefik.http.services.id.loadbalancer.server.port=1411'
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
