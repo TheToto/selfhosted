@@ -1,6 +1,6 @@
 services:
   sparkyfitness-db:
-    image: postgres:18.3-alpine
+    image: postgres:18.4-alpine
     restart: unless-stopped
     environment:
       POSTGRES_DB: sparkyfitness_db
