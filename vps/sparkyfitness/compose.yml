@@ -14,7 +14,7 @@ services:
       - sparkyfitness-network
 
   sparkyfitness-server:
-    image: codewithcj/sparkyfitness_server:latest
+    image: codewithcj/sparkyfitness_server:v1.6.1
     environment:
       SPARKY_FITNESS_DB_USER: sparky
       SPARKY_FITNESS_DB_HOST: sparkyfitness-db
@@ -47,7 +47,7 @@ services:
       - sparky-uploads:/app/SparkyFitnessServer/uploads
 
   fitness:
-    image: codewithcj/sparkyfitness:latest
+    image: codewithcj/sparkyfitness:v1.6.1
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.fitness.entrypoints=https'
