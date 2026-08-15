@@ -14,7 +14,7 @@ services:
       - sparkyfitness-network
 
   sparkyfitness-server:
-    image: codewithcj/sparkyfitness_server:v1.6.1
+    image: codewithcj/sparkyfitness_server:v1.6.2
     environment:
       SPARKY_FITNESS_DB_USER: sparky
       SPARKY_FITNESS_DB_HOST: sparkyfitness-db
