@@ -33,7 +33,7 @@ services:
       - seafile-net
           
   file:
-    image: seafileltd/seafile-pro-mc:13.0.25
+    image: seafileltd/seafile-pro-mc:13.0.27
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
