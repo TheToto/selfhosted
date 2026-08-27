@@ -47,7 +47,7 @@ services:
       - sparky-uploads:/app/SparkyFitnessServer/uploads
 
   fitness:
-    image: codewithcj/sparkyfitness:v1.6.3
+    image: codewithcj/sparkyfitness:v1.6.4
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.fitness.entrypoints=https'
