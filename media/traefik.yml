@@ -82,12 +82,6 @@ services:
 
       - 'socket-proxy.allow.get=/v1\..*/(version|containers/.*|events.*)|/_ping'
       - 'socket-proxy.allow.head=/_ping'
-
-      - 'tinyauth.apps.prowlarr.path.allow=^/api(/.*|$$)'
-      - 'tinyauth.apps.sonarr.path.allow=^/api(/.*|$$)'
-      - 'tinyauth.apps.radarr.path.allow=^/api(/.*|$$)'
-      - 'tinyauth.apps.sonarr4k.path.allow=^/api(/.*|$$)'
-      - 'tinyauth.apps.radarr4k.path.allow=^/api(/.*|$$)'
     environment:
       DOCKER_HOST: tcp://dockerproxy:2375
       TINYAUTH_UI_TITLE: TheToto Media Gate

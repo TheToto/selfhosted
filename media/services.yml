@@ -83,8 +83,12 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.prowlarr.entrypoints=https'
-      - 'traefik.http.services.prowlarr.loadbalancer.server.port=9696'
+      - 'traefik.http.routers.prowlarr.service=prowlarr'
       - 'traefik.http.routers.prowlarr.middlewares=gate'
+      - 'traefik.http.routers.prowlarr-api.rule=(Host(`prowlarr.media.${APP_DOMAIN}`) || Host(`prowlarr.${APP_DOMAIN}`)) && PathPrefix(`/api`)'
+      - 'traefik.http.routers.prowlarr-api.entrypoints=https'
+      - 'traefik.http.routers.prowlarr-api.service=prowlarr'
+      - 'traefik.http.services.prowlarr.loadbalancer.server.port=9696'
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:4.0.19
@@ -104,8 +108,12 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.sonarr.entrypoints=https'
-      - 'traefik.http.services.sonarr.loadbalancer.server.port=8989'
+      - 'traefik.http.routers.sonarr.service=sonarr'
       - 'traefik.http.routers.sonarr.middlewares=gate'
+      - 'traefik.http.routers.sonarr-api.rule=(Host(`sonarr.media.${APP_DOMAIN}`) || Host(`sonarr.${APP_DOMAIN}`)) && PathPrefix(`/api`)'
+      - 'traefik.http.routers.sonarr-api.entrypoints=https'
+      - 'traefik.http.routers.sonarr-api.service=sonarr'
+      - 'traefik.http.services.sonarr.loadbalancer.server.port=8989'
 
   radarr:
     image: lscr.io/linuxserver/radarr:6.3.0
@@ -125,8 +133,12 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.radarr.entrypoints=https'
-      - 'traefik.http.services.radarr.loadbalancer.server.port=7878'
+      - 'traefik.http.routers.radarr.service=radarr'
       - 'traefik.http.routers.radarr.middlewares=gate'
+      - 'traefik.http.routers.radarr-api.rule=(Host(`radarr.media.${APP_DOMAIN}`) || Host(`radarr.${APP_DOMAIN}`)) && PathPrefix(`/api`)'
+      - 'traefik.http.routers.radarr-api.entrypoints=https'
+      - 'traefik.http.routers.radarr-api.service=radarr'
+      - 'traefik.http.services.radarr.loadbalancer.server.port=7878'
 
   sonarr4k:
     image: lscr.io/linuxserver/sonarr:4.0.19
@@ -146,8 +158,12 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.sonarr4k.entrypoints=https'
-      - 'traefik.http.services.sonarr4k.loadbalancer.server.port=8989'
+      - 'traefik.http.routers.sonarr4k.service=sonarr4k'
       - 'traefik.http.routers.sonarr4k.middlewares=gate'
+      - 'traefik.http.routers.sonarr4k-api.rule=(Host(`sonarr4k.media.${APP_DOMAIN}`) || Host(`sonarr4k.${APP_DOMAIN}`)) && PathPrefix(`/api`)'
+      - 'traefik.http.routers.sonarr4k-api.entrypoints=https'
+      - 'traefik.http.routers.sonarr4k-api.service=sonarr4k'
+      - 'traefik.http.services.sonarr4k.loadbalancer.server.port=8989'
 
   radarr4k:
     image: lscr.io/linuxserver/radarr:6.3.0
@@ -167,8 +183,12 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.radarr4k.entrypoints=https'
-      - 'traefik.http.services.radarr4k.loadbalancer.server.port=7878'
+      - 'traefik.http.routers.radarr4k.service=radarr4k'
       - 'traefik.http.routers.radarr4k.middlewares=gate'
+      - 'traefik.http.routers.radarr4k-api.rule=(Host(`radarr4k.media.${APP_DOMAIN}`) || Host(`radarr4k.${APP_DOMAIN}`)) && PathPrefix(`/api`)'
+      - 'traefik.http.routers.radarr4k-api.entrypoints=https'
+      - 'traefik.http.routers.radarr4k-api.service=radarr4k'
+      - 'traefik.http.services.radarr4k.loadbalancer.server.port=7878'
 
   overseerr: # Seerr instance for Plex
     image: ghcr.io/seerr-team/seerr:v3.4.1
