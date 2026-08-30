@@ -1,0 +1,111 @@
+services:
+  dawarich_redis:
+    image: redis:7.4-alpine
+    command: >
+      redis-server
+      --save 900 1
+      --save 300 10
+      --appendonly no
+    networks:
+      - dawarich
+    volumes:
+      - dawarich_shared:/data
+    restart: unless-stopped
+
+  dawarich_db:
+    image: imresamu/postgis:17-3.5-alpine
+    shm_size: 1G
+    volumes:
+      - dawarich_db_data:/var/lib/postgresql/data
+      - dawarich_shared:/var/shared
+    networks:
+      - dawarich
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-dawarich}
+    restart: unless-stopped
+
+  dawarich_app:
+    image: freikin/dawarich:latest
+    volumes:
+      - dawarich_public:/var/app/public
+      - dawarich_storage:/var/app/storage
+      - dawarich_db_data:/dawarich_db_data
+    networks:
+      - dawarich
+      - global_net
+    stdin_open: true
+    tty: true
+    entrypoint: web-entrypoint.sh
+    command: ['bin/rails', 'server', '-p', '3000', '-b', '::']
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.dawarich.entrypoints=https'
+      - 'traefik.http.routers.dawarich.rule=Host(`timeline.${DOMAIN_NAME:-thetoto.fr}`)'
+      - 'traefik.http.routers.dawarich.service=dawarich'
+      - 'traefik.http.services.dawarich.loadbalancer.server.port=3000'
+    environment:
+      RAILS_ENV: production
+      REDIS_URL: redis://dawarich_redis:6379
+      DATABASE_HOST: dawarich_db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: ${POSTGRES_USER:-postgres}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_NAME: ${POSTGRES_DB:-dawarich}
+      APPLICATION_HOSTS: timeline.${DOMAIN_NAME:-thetoto.fr}
+      TIME_ZONE: ${TIME_ZONE:-Europe/Paris}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      OIDC_ISSUER: https://id.${DOMAIN_NAME:-thetoto.fr}
+      OIDC_REDIRECT_URI: https://timeline.${DOMAIN_NAME:-thetoto.fr}/users/auth/openid_connect/callback
+      ALLOW_EMAIL_PASSWORD_LOGIN: 'false'
+    depends_on:
+      - dawarich_db
+      - dawarich_redis
+
+  dawarich_sidekiq:
+    image: freikin/dawarich:latest
+    volumes:
+      - dawarich_public:/var/app/public
+      - dawarich_storage:/var/app/storage
+    networks:
+      - dawarich
+    stdin_open: true
+    tty: true
+    entrypoint: sidekiq-entrypoint.sh
+    command: ['sidekiq']
+    restart: unless-stopped
+    environment:
+      RAILS_ENV: production
+      REDIS_URL: redis://dawarich_redis:6379
+      DATABASE_HOST: dawarich_db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: ${POSTGRES_USER:-postgres}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_NAME: ${POSTGRES_DB:-dawarich}
+      APPLICATION_HOSTS: timeline.${DOMAIN_NAME:-thetoto.fr}
+      TIME_ZONE: ${TIME_ZONE:-Europe/Paris}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      OIDC_ISSUER: https://id.${DOMAIN_NAME:-thetoto.fr}
+      OIDC_REDIRECT_URI: https://timeline.${DOMAIN_NAME:-thetoto.fr}/users/auth/openid_connect/callback
+      ALLOW_EMAIL_PASSWORD_LOGIN: 'false'
+    depends_on:
+      - dawarich_db
+      - dawarich_redis
+      - dawarich_app
+
+volumes:
+  dawarich_db_data:
+  dawarich_shared:
+  dawarich_public:
+  dawarich_storage:
+
+networks:
+  dawarich:
+  global_net:
+    external: true
