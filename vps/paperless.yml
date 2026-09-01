@@ -1,6 +1,6 @@
 services:
   broker:
-    image: docker.io/valkey/valkey:9.1.1-alpine
+    image: docker.io/valkey/valkey:9.1.2-alpine
     networks:
       - paperless
     restart: unless-stopped
