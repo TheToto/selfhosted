@@ -1,6 +1,6 @@
 services:
   dawarich_redis:
-    image: redis:7.4-alpine
+    image: redis:8.10-alpine
     command: >
       redis-server
       --save 900 1
