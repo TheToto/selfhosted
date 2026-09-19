@@ -69,7 +69,7 @@ services:
       AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: true
 
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:2.5.2
+    image: lscr.io/linuxserver/prowlarr:2.6.5
     restart: unless-stopped
     networks:
       - global_net
