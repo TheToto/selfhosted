@@ -116,7 +116,7 @@ services:
       - 'traefik.http.services.sonarr.loadbalancer.server.port=8989'
 
   radarr:
-    image: lscr.io/linuxserver/radarr:6.3.0
+    image: lscr.io/linuxserver/radarr:6.4.4
     restart: unless-stopped
     networks:
       - global_net
@@ -166,7 +166,7 @@ services:
       - 'traefik.http.services.sonarr4k.loadbalancer.server.port=8989'
 
   radarr4k:
-    image: lscr.io/linuxserver/radarr:6.3.0
+    image: lscr.io/linuxserver/radarr:6.4.4
     restart: unless-stopped
     networks:
       - global_net
