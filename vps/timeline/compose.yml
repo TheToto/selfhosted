@@ -1,6 +1,6 @@
 services:
   dawarich_redis:
-    image: redis:7.4-alpine
+    image: redis:7.4.11-alpine
     command: >
       redis-server
       --save 900 1
@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
 
   dawarich_app:
-    image: freikin/dawarich:latest
+    image: freikin/dawarich:1.15.2
     volumes:
       - dawarich_public:/var/app/public
       - dawarich_storage:/var/app/storage
@@ -67,7 +67,7 @@ services:
       - dawarich_redis
 
   dawarich_sidekiq:
-    image: freikin/dawarich:latest
+    image: freikin/dawarich:1.15.2
     volumes:
       - dawarich_public:/var/app/public
       - dawarich_storage:/var/app/storage
