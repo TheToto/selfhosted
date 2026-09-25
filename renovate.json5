@@ -38,7 +38,7 @@
       matchPackagePatterns: [
         '^(gh|ls)cr\\.io/linuxserver/',
       ],
-      versioning: 'regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:.*?(?<build>\\d+)-ls(?<revision>\\d+)|.*?-ls(?<build>\\d+))$',
+      versioning: 'regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?.*?-ls(?<build>\\d+)$',
     },
     {
       matchManagers: [
