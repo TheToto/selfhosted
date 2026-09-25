@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb:10.11
+    image: mariadb:10.11.19
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=${SEAFILE_MYSQL_DB_PASSWORD}
@@ -21,7 +21,7 @@ services:
         ]
 
   redis:
-    image: redis:alpine
+    image: redis:8.10.2-alpine
     restart: unless-stopped
     command:
       - /bin/sh
