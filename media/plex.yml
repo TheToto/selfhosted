@@ -1,6 +1,6 @@
 services:
   plex:
-    image: lscr.io/linuxserver/plex:1.43.4
+    image: lscr.io/linuxserver/plex:1.43.4.10903-e5521bd8c-ls325
     restart: unless-stopped
     networks:
       - global_net
@@ -48,7 +48,7 @@ services:
       - ${HOST_PATH}/plex-auto-languages:/config
 
   tautulli:
-    image: lscr.io/linuxserver/tautulli:2.18.1
+    image: lscr.io/linuxserver/tautulli:v2.18.1-ls245
     restart: unless-stopped
     networks:
       - global_net

@@ -2,7 +2,7 @@
 
 services:
   calibre:
-    image: lscr.io/linuxserver/calibre-web:0.6.27
+    image: lscr.io/linuxserver/calibre-web:0.6.27-ls402
     restart: unless-stopped
     networks:
       - global_net

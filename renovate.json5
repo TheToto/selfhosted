@@ -1,12 +1,12 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
-    'config:base',
+    'config:recommended',
   ],
   timezone: 'Europe/Paris',
   'docker-compose': {
-    managerFilePatterns: [
-      '/^.*\\.ya?ml$/',
+    fileMatch: [
+      '^.*\\.ya?ml$',
     ],
   },
   assignees: [
@@ -35,11 +35,30 @@
       matchManagers: [
         'docker-compose',
       ],
+      matchPackagePatterns: [
+        '^(gh|ls)cr\\.io/linuxserver/',
+      ],
+      versioning: 'regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:.*?(?<build>\\d+)-ls(?<revision>\\d+)|.*?-ls(?<build>\\d+))$',
+    },
+    {
+      matchManagers: [
+        'docker-compose',
+      ],
       matchPackageNames: [
+        'lscr.io/linuxserver/jellyfin',
         'lscr.io/linuxserver/overseerr',
         'lscr.io/linuxserver/tautulli',
       ],
-      allowedVersions: '<2000', // There is 2021.x.x tags
+      allowedVersions: '<2000', // There is 2021.x.x tags and ancient 20201215 tags
+    },
+    {
+      matchManagers: [
+        'docker-compose',
+      ],
+      matchPackageNames: [
+        'lscr.io/linuxserver/sonarr',
+      ],
+      allowedVersions: '!/^5\\./', // Ancient mono 5.14-2.0.0.5344 tags
     },
     {
       matchManagers: [
