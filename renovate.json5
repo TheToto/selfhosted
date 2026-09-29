@@ -5,8 +5,8 @@
   ],
   timezone: 'Europe/Paris',
   'docker-compose': {
-    fileMatch: [
-      '^.*\\.ya?ml$',
+    managerFilePatterns: [
+      '/^.*\\.ya?ml$/',
     ],
   },
   assignees: [
@@ -35,10 +35,10 @@
       matchManagers: [
         'docker-compose',
       ],
-      matchPackagePatterns: [
-        '^(gh|ls)cr\\.io/linuxserver/',
-      ],
       versioning: 'regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?.*?-ls(?<build>\\d+)$',
+      matchPackageNames: [
+        '/^(gh|ls)cr\\.io/linuxserver//',
+      ],
     },
     {
       matchManagers: [
@@ -49,7 +49,7 @@
         'lscr.io/linuxserver/overseerr',
         'lscr.io/linuxserver/tautulli',
       ],
-      allowedVersions: '<2000', // There is 2021.x.x tags and ancient 20201215 tags
+      allowedVersions: '<2000',
     },
     {
       matchManagers: [
@@ -58,7 +58,7 @@
       matchPackageNames: [
         'lscr.io/linuxserver/sonarr',
       ],
-      allowedVersions: '!/^5\\./', // Ancient mono 5.14-2.0.0.5344 tags
+      allowedVersions: '!/^5\\./',
     },
     {
       matchManagers: [
@@ -67,7 +67,7 @@
       matchPackageNames: [
         'lscr.io/linuxserver/calibre-web',
       ],
-      allowedVersions: '<2', // Actual versions are 0.x. There is 2021.x.x and v2, v3, v4 tags... 
+      allowedVersions: '<2',
     },
     {
       matchManagers: [
@@ -76,7 +76,7 @@
       matchPackageNames: [
         'lscr.io/linuxserver/qbittorrent',
       ],
-      allowedVersions: '<10', // Actual version is 3.x.x. There is 14.x.x, 20.x.x tags...
+      allowedVersions: '<10',
     },
     {
       matchManagers: [
@@ -85,7 +85,7 @@
       matchPackageNames: [
         'getmeili/meilisearch',
       ],
-      allowedVersions: '<1.10', // Limit to 1.9
+      allowedVersions: '<1.10',
     },
   ],
 }
