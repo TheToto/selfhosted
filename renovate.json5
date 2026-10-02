@@ -5,8 +5,8 @@
   ],
   timezone: 'Europe/Paris',
   'docker-compose': {
-    fileMatch: [
-      '^.*\\.ya?ml$',
+    managerFilePatterns: [
+      '/^.*\\.ya?ml$/',
     ],
   },
   assignees: [
@@ -35,10 +35,10 @@
       matchManagers: [
         'docker-compose',
       ],
-      matchPackagePatterns: [
-        '^(gh|ls)cr\\.io/linuxserver/',
-      ],
       versioning: 'regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?.*?-ls(?<build>\\d+)$',
+      matchPackageNames: [
+        '/^(gh|ls)cr\\.io/linuxserver//',
+      ],
     },
     {
       matchManagers: [
@@ -77,15 +77,6 @@
         'lscr.io/linuxserver/qbittorrent',
       ],
       allowedVersions: '<10', // Actual version is 3.x.x. There is 14.x.x, 20.x.x tags...
-    },
-    {
-      matchManagers: [
-        'docker-compose',
-      ],
-      matchPackageNames: [
-        'getmeili/meilisearch',
-      ],
-      allowedVersions: '<1.10', // Limit to 1.9
-    },
+    }
   ],
 }
