@@ -36,7 +36,7 @@ services:
       - "traefik.http.middlewares.jellyfin-mw.headers.customFrameOptionsValue='allow-from https://jellyfin.thetoto.fr'"
 
   meilisearch: # port: 7700
-    image: getmeili/meilisearch:v1.35.0
+    image: getmeili/meilisearch:v1.54.3
     restart: unless-stopped
     networks:
       - jellyfin
