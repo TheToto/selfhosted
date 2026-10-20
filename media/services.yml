@@ -103,7 +103,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${HOST_PATH}/sonarr:/config
-      - ${MEDIA_PATH}:/media
+      - ${MEDIA_PATH}:/media:rslave
       - ${DOWNLOADS_PATH}:/downloads
     labels:
       - 'traefik.enable=true'
@@ -128,7 +128,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${HOST_PATH}/radarr:/config
-      - ${MEDIA_PATH}:/media
+      - ${MEDIA_PATH}:/media:rslave
       - ${DOWNLOADS_PATH}:/downloads
     labels:
       - 'traefik.enable=true'
@@ -153,7 +153,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${HOST_PATH}/sonarr4k:/config
-      - ${MEDIA_PATH}:/media
+      - ${MEDIA_PATH}:/media:rslave
       - ${DOWNLOADS_PATH}:/downloads
     labels:
       - 'traefik.enable=true'
@@ -178,7 +178,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${HOST_PATH}/radarr4k:/config
-      - ${MEDIA_PATH}:/media
+      - ${MEDIA_PATH}:/media:rslave
       - ${DOWNLOADS_PATH}:/downloads
     labels:
       - 'traefik.enable=true'

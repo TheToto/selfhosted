@@ -12,7 +12,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${HOST_PATH}/plex:/config
-      - ${MEDIA_PATH}:/media
+      - ${MEDIA_PATH}:/media:rslave
       - /dev/shm:/transcode
     devices:
       - /dev/dri:/dev/dri

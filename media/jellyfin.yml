@@ -12,7 +12,7 @@ services:
       - JELLYFIN_PublishedServerUrl=jellyfin.thetoto.fr
     volumes:
       - ${HOST_PATH}/jellyfin:/config
-      - ${MEDIA_PATH}:/data/media
+      - ${MEDIA_PATH}:/data/media:rslave
       - /dev/shm:/config/cache/transcodes
     devices:
       - /dev/dri:/dev/dri
@@ -44,6 +44,7 @@ services:
       MEILI_ENV: production
       MEILI_NO_ANALYTICS: "true"
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_UPGRADE_DB: "true"
     volumes:
       - ${HOST_PATH}/meilisearch:/meili_data
 
