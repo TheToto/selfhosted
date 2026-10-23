@@ -1,2 +1,7 @@
 # Environment secrets
 .env
+
+# Local agent memory & documentation
+GEMINI.md
+AGENTS.md
+

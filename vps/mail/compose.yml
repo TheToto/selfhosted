@@ -1,0 +1,64 @@
+services:
+  stalwart:
+    image: stalwartlabs/stalwart:v0.16.27
+    container_name: stalwart
+    hostname: mail.${DOMAIN_NAME}
+    restart: unless-stopped
+    ports:
+      - "25:25"       # SMTP Inbound
+      - "465:465"     # SMTPS (Implicit TLS)
+      - "587:587"     # Submission (STARTTLS)
+      - "143:143"     # IMAP
+      - "993:993"     # IMAPS (Implicit TLS)
+      - "4190:4190"   # ManageSieve
+    volumes:
+      - stalwart-etc:/etc/stalwart
+      - stalwart-data:/var/lib/stalwart
+    environment:
+      - STALWART_PUBLIC_URL=https://mail.${DOMAIN_NAME}
+      - STALWART_RECOVERY_ADMIN=admin:${STALWART_ADMIN_PASSWORD}
+      - TZ=${TZ}
+    networks:
+      - global_net
+      - mail-net
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.stalwart.rule=Host(`mail.${DOMAIN_NAME}`)'
+      - 'traefik.http.routers.stalwart.entrypoints=https'
+      - 'traefik.http.routers.stalwart.service=stalwart'
+      - 'traefik.http.services.stalwart.loadbalancer.server.port=8080'
+
+  bulwark:
+    image: ghcr.io/bulwarkmail/webmail:1.12.0
+    container_name: bulwark
+    restart: unless-stopped
+    depends_on:
+      - stalwart
+    volumes:
+      - bulwark-data:/app/data
+    environment:
+      - PORT=3000
+      - JMAP_SERVER_URL=https://mail.${DOMAIN_NAME}
+      - SESSION_SECRET=${BULWARK_SESSION_SECRET}
+      - SETTINGS_SYNC_ENABLED=true
+      - OAUTH_ALLOW_PRIVATE_ENDPOINTS=true
+      - TZ=${TZ}
+    networks:
+      - global_net
+      - mail-net
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.bulwark.rule=Host(`webmail.${DOMAIN_NAME}`)'
+      - 'traefik.http.routers.bulwark.entrypoints=https'
+      - 'traefik.http.routers.bulwark.service=bulwark'
+      - 'traefik.http.services.bulwark.loadbalancer.server.port=3000'
+
+networks:
+  mail-net:
+  global_net:
+    external: true
+
+volumes:
+  stalwart-data:
+  stalwart-etc:
+  bulwark-data:
