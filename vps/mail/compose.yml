@@ -23,9 +23,13 @@ services:
       - mail-net
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.stalwart.rule=Host(`mail.${DOMAIN_NAME}`) || Host(`stalwart.${DOMAIN_NAME}`) || Host(`autoconfig.${DOMAIN_NAME}`) || Host(`autodiscover.${DOMAIN_NAME}`) || Host(`mta-sts.${DOMAIN_NAME}`)'
+      - 'traefik.http.routers.stalwart.rule=Host(`stalwart.${DOMAIN_NAME}`) || Host(`autoconfig.${DOMAIN_NAME}`) || Host(`autodiscover.${DOMAIN_NAME}`) || Host(`mta-sts.${DOMAIN_NAME}`)'
       - 'traefik.http.routers.stalwart.entrypoints=https'
       - 'traefik.http.routers.stalwart.service=stalwart'
+      - 'traefik.http.routers.stalwart-api.rule=Host(`mail.${DOMAIN_NAME}`) && (PathPrefix(`/jmap`) || PathPrefix(`/dav`) || PathPrefix(`/.well-known`) || PathPrefix(`/mail/config-v1.1.xml`) || PathPrefix(`/autodiscover`))'
+      - 'traefik.http.routers.stalwart-api.entrypoints=https'
+      - 'traefik.http.routers.stalwart-api.service=stalwart'
+      - 'traefik.http.routers.stalwart-api.priority=100'
       - 'traefik.http.services.stalwart.loadbalancer.server.port=8080'
 
   bulwark:
@@ -48,9 +52,10 @@ services:
       - mail-net
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.bulwark.rule=Host(`webmail.${DOMAIN_NAME}`)'
+      - 'traefik.http.routers.bulwark.rule=Host(`webmail.${DOMAIN_NAME}`) || Host(`mail.${DOMAIN_NAME}`)'
       - 'traefik.http.routers.bulwark.entrypoints=https'
       - 'traefik.http.routers.bulwark.service=bulwark'
+      - 'traefik.http.routers.bulwark.priority=10'
       - 'traefik.http.services.bulwark.loadbalancer.server.port=3000'
 
 networks:
