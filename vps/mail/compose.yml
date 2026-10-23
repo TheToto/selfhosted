@@ -23,7 +23,7 @@ services:
       - mail-net
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.stalwart.rule=Host(`mail.${DOMAIN_NAME}`) || Host(`stalwart.${DOMAIN_NAME}`) || Host(`autoconfig.${DOMAIN_NAME}`) || Host(`autodiscover.${DOMAIN_NAME}`) || Host(`mta-sts.${DOMAIN_NAME}`)'
+      - 'traefik.http.routers.stalwart.rule=Host(`mail.${DOMAIN_NAME}`) || Host(`autoconfig.${DOMAIN_NAME}`) || Host(`autodiscover.${DOMAIN_NAME}`) || Host(`mta-sts.${DOMAIN_NAME}`)'
       - 'traefik.http.routers.stalwart.entrypoints=https'
       - 'traefik.http.routers.stalwart.service=stalwart'
       - 'traefik.http.services.stalwart.loadbalancer.server.port=8080'
