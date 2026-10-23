@@ -1,6 +1,6 @@
 services:
   plex:
-    image: lscr.io/linuxserver/plex:1.43.4.10903-e5521bd8c-ls327
+    image: lscr.io/linuxserver/plex:1.43.5.11029-6bf8af3f0-ls329
     restart: unless-stopped
     networks:
       - global_net
