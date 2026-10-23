@@ -2,7 +2,7 @@ services:
   stalwart:
     image: stalwartlabs/stalwart:v0.16.27
     container_name: stalwart
-    hostname: stalwart.${DOMAIN_NAME}
+    hostname: mail.${DOMAIN_NAME}
     restart: unless-stopped
     ports:
       - "25:25"       # SMTP Inbound
@@ -15,7 +15,7 @@ services:
       - stalwart-etc:/etc/stalwart
       - stalwart-data:/var/lib/stalwart
     environment:
-      - STALWART_PUBLIC_URL=https://stalwart.${DOMAIN_NAME}
+      - STALWART_PUBLIC_URL=https://mail.${DOMAIN_NAME}
       - STALWART_RECOVERY_ADMIN=admin:${STALWART_ADMIN_PASSWORD}
       - TZ=${TZ}
     networks:
@@ -23,7 +23,7 @@ services:
       - mail-net
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.stalwart.rule=Host(`stalwart.${DOMAIN_NAME}`) || Host(`autoconfig.${DOMAIN_NAME}`) || Host(`autodiscover.${DOMAIN_NAME}`) || Host(`mta-sts.${DOMAIN_NAME}`) || Host(`mail.${DOMAIN_NAME}`)'
+      - 'traefik.http.routers.stalwart.rule=Host(`mail.${DOMAIN_NAME}`) || Host(`stalwart.${DOMAIN_NAME}`) || Host(`autoconfig.${DOMAIN_NAME}`) || Host(`autodiscover.${DOMAIN_NAME}`) || Host(`mta-sts.${DOMAIN_NAME}`)'
       - 'traefik.http.routers.stalwart.entrypoints=https'
       - 'traefik.http.routers.stalwart.service=stalwart'
       - 'traefik.http.services.stalwart.loadbalancer.server.port=8080'
@@ -38,7 +38,7 @@ services:
       - bulwark-data:/app/data
     environment:
       - PORT=3000
-      - JMAP_SERVER_URL=https://stalwart.${DOMAIN_NAME}
+      - JMAP_SERVER_URL=https://mail.${DOMAIN_NAME}
       - SESSION_SECRET=${BULWARK_SESSION_SECRET}
       - SETTINGS_SYNC_ENABLED=true
       - OAUTH_ALLOW_PRIVATE_ENDPOINTS=true
