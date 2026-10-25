@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
 
   dawarich_app:
-    image: freikin/dawarich:1.16.0
+    image: freikin/dawarich:1.17.0
     volumes:
       - dawarich_public:/var/app/public
       - dawarich_storage:/var/app/storage
@@ -67,7 +67,7 @@ services:
       - dawarich_redis
 
   dawarich_sidekiq:
-    image: freikin/dawarich:1.16.0
+    image: freikin/dawarich:1.17.0
     volumes:
       - dawarich_public:/var/app/public
       - dawarich_storage:/var/app/storage
