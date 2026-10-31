@@ -29,7 +29,7 @@ services:
       - 'traefik.http.services.stalwart.loadbalancer.server.port=8080'
 
   bulwark:
-    image: ghcr.io/bulwarkmail/webmail:1.12.0
+    image: ghcr.io/bulwarkmail/webmail:1.19.1
     container_name: bulwark
     restart: unless-stopped
     depends_on:
