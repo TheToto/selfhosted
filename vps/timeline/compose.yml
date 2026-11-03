@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   dawarich_db:
-    image: imresamu/postgis:17-3.5-alpine
+    image: imresamu/postgis:18-3.5-alpine
     shm_size: 1G
     volumes:
       - dawarich_db_data:/var/lib/postgresql/data
