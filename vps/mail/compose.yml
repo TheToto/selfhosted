@@ -1,6 +1,6 @@
 services:
   stalwart:
-    image: stalwartlabs/stalwart:v0.16.27
+    image: stalwartlabs/stalwart:v1.0.3
     container_name: stalwart
     hostname: mail.${DOMAIN_NAME}
     restart: unless-stopped
@@ -12,8 +12,9 @@ services:
       - "993:993"     # IMAPS (Implicit TLS)
       - "4190:4190"   # ManageSieve
     volumes:
-      - stalwart-etc:/etc/stalwart
-      - stalwart-data:/var/lib/stalwart
+      - stalwart-v1-etc:/etc/stalwart
+      - stalwart-v1-data:/var/lib/stalwart
+      - stalwart-log:/var/log/stalwart
     environment:
       - STALWART_PUBLIC_URL=https://mail.${DOMAIN_NAME}
       - STALWART_RECOVERY_ADMIN=admin:${STALWART_ADMIN_PASSWORD}
@@ -59,6 +60,13 @@ networks:
     external: true
 
 volumes:
-  stalwart-data:
-  stalwart-etc:
+  stalwart-v1-data:
+    name: mail_stalwart-v1-data
+    external: true
+  stalwart-v1-etc:
+    name: mail_stalwart-v1-etc
+    external: true
+  stalwart-log:
+    name: mail_stalwart-log
+    external: true
   bulwark-data:
