@@ -79,13 +79,15 @@
       allowedVersions: '<10', // Actual version is 3.x.x. There is 14.x.x, 20.x.x tags...
     },
     {
+      // Les versions stables 14.x de Seafile Pro (ex: 14.0.9) n'ont pas de manifest ARM64 (amd64 uniquement).
+      // On configure Renovate pour suivre les tags -arm-testing afin de tester les mises à jour ARM.
       matchManagers: [
         'docker-compose',
       ],
       matchPackageNames: [
         'seafileltd/seafile-pro-mc',
       ],
-      enabled: false, // Pinned to arm-testing until multi-arch manifests are published for 14.x
+      versioning: 'regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?-arm-testing$',
     }
   ],
 }
