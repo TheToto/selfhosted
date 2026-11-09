@@ -37,7 +37,7 @@
       ],
       versioning: 'regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?.*?-ls(?<build>\\d+)$',
       matchPackageNames: [
-        '/^(gh|ls)cr\\.io/linuxserver//',
+        '/^(?:(?:gh|ls)cr\\.io/)?linuxserver//',
       ],
     },
     {
@@ -45,9 +45,9 @@
         'docker-compose',
       ],
       matchPackageNames: [
-        'lscr.io/linuxserver/jellyfin',
-        'lscr.io/linuxserver/overseerr',
-        'lscr.io/linuxserver/tautulli',
+        'linuxserver/jellyfin',
+        'linuxserver/overseerr',
+        'linuxserver/tautulli',
       ],
       allowedVersions: '<2000', // There is 2021.x.x tags and ancient 20201215 tags
     },
@@ -56,7 +56,7 @@
         'docker-compose',
       ],
       matchPackageNames: [
-        'lscr.io/linuxserver/sonarr',
+        'linuxserver/sonarr',
       ],
       allowedVersions: '!/^5\\./', // Ancient mono 5.14-2.0.0.5344 tags
     },
@@ -65,7 +65,7 @@
         'docker-compose',
       ],
       matchPackageNames: [
-        'lscr.io/linuxserver/calibre-web',
+        'linuxserver/calibre-web',
       ],
       allowedVersions: '<2', // Actual versions are 0.x. There is 2021.x.x and v2, v3, v4 tags... 
     },
@@ -74,7 +74,7 @@
         'docker-compose',
       ],
       matchPackageNames: [
-        'lscr.io/linuxserver/qbittorrent',
+        'linuxserver/qbittorrent',
       ],
       allowedVersions: '<10', // Actual version is 3.x.x. There is 14.x.x, 20.x.x tags...
     }
