@@ -77,6 +77,15 @@
         'linuxserver/qbittorrent',
       ],
       allowedVersions: '<10', // Actual version is 3.x.x. There is 14.x.x, 20.x.x tags...
+    },
+    {
+      matchManagers: [
+        'docker-compose',
+      ],
+      matchPackageNames: [
+        'seafileltd/seafile-pro-mc',
+      ],
+      allowedVersions: '<14', // 14.x currently lacks ARM64 manifests
     }
   ],
 }
