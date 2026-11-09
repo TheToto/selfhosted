@@ -33,7 +33,7 @@ services:
       - seafile-net
           
   file:
-    image: seafileltd/seafile-pro-mc:13.0.29
+    image: seafileltd/seafile-pro-mc:14.0.8-arm-testing
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
@@ -65,6 +65,7 @@ services:
       - SEAFILE_SERVER_PROTOCOL=https
 
       - ENABLE_GO_FILESERVER=true
+      - ENABLE_SEAFDAV=true
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
     depends_on:

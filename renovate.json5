@@ -85,7 +85,7 @@
       matchPackageNames: [
         'seafileltd/seafile-pro-mc',
       ],
-      allowedVersions: '<14', // 14.x currently lacks ARM64 manifests
+      enabled: false, // Pinned to arm-testing until multi-arch manifests are published for 14.x
     }
   ],
 }
