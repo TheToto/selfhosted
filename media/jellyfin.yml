@@ -1,6 +1,6 @@
 services:
   jellyfin:
-    image: linuxserver/jellyfin:12.4ubu2604-ls59
+    image: linuxserver/jellyfin:12.4ubu2604-ls60
     restart: unless-stopped
     networks:
       - global_net
