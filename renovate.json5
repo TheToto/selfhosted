@@ -159,6 +159,24 @@
         'seafileltd/seafile-pro-mc',
       ],
       versioning: 'regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?-arm-testing$',
-    }
+    },
+    {
+      // Ne jamais proposer les mises à jour majeures des bases de données SQL
+      // (format binaire sur disque incompatible sans migration/dump).
+      matchManagers: [
+        'docker-compose',
+      ],
+      matchPackageNames: [
+        'postgres',
+        'imresamu/postgis',
+        'ghcr.io/immich-app/postgres',
+        'mariadb',
+        'timescale/timescaledb-ha',
+      ],
+      matchUpdateTypes: [
+        'major',
+      ],
+      enabled: false,
+    },
   ],
 }
