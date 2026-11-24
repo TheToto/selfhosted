@@ -19,16 +19,87 @@
   ],
   packageRules: [
     {
+      matchFileNames: [
+        'vps/**',
+      ],
       matchUpdateTypes: [
         'patch',
       ],
+      groupName: 'vps (non-major)',
       automerge: true,
     },
     {
+      matchFileNames: [
+        'vps/**',
+      ],
       matchUpdateTypes: [
         'minor',
       ],
       matchCurrentVersion: '!/^0/',
+      groupName: 'vps (non-major)',
+      automerge: true,
+    },
+    {
+      matchFileNames: [
+        'media/**',
+      ],
+      matchUpdateTypes: [
+        'patch',
+      ],
+      groupName: 'media (non-major)',
+      automerge: true,
+    },
+    {
+      matchFileNames: [
+        'media/**',
+      ],
+      matchUpdateTypes: [
+        'minor',
+      ],
+      matchCurrentVersion: '!/^0/',
+      groupName: 'media (non-major)',
+      automerge: true,
+    },
+    {
+      matchFileNames: [
+        'monitor/**',
+      ],
+      matchUpdateTypes: [
+        'patch',
+      ],
+      groupName: 'monitor (non-major)',
+      automerge: true,
+    },
+    {
+      matchFileNames: [
+        'monitor/**',
+      ],
+      matchUpdateTypes: [
+        'minor',
+      ],
+      matchCurrentVersion: '!/^0/',
+      groupName: 'monitor (non-major)',
+      automerge: true,
+    },
+    {
+      matchFileNames: [
+        'all/**',
+      ],
+      matchUpdateTypes: [
+        'patch',
+      ],
+      groupName: 'all (non-major)',
+      automerge: true,
+    },
+    {
+      matchFileNames: [
+        'all/**',
+      ],
+      matchUpdateTypes: [
+        'minor',
+      ],
+      matchCurrentVersion: '!/^0/',
+      groupName: 'all (non-major)',
       automerge: true,
     },
     {
